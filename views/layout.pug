@@ -1,0 +1,29 @@
+doctype html
+html(lang='zh-CN')
+  head
+    meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name="HandheldFriendly", content="True")
+    meta(name="viewport", content="width=device-width, initial-scale=1, user-scalable=no")
+    meta(http-equiv="cleartype", content="on")
+    meta(name='keywords', content='alib,koa,framework')
+    meta(name='description', content='framework base on koa 2.x')
+    meta(name='author',content='Tree.Xie')
+    title #{title}
+    include ./inlinejs
+    //CSS_FILES_CONTAINER
+    - importer.import('/css/font-awesome.min.css', '/css/pure.min.css', '/css/global.css')
+  body
+    block bodyContainer
+
+  if viewData && viewData.globals
+    script.
+      window.JT_GLOBALS = !{JSON.stringify(viewData.globals)};
+
+  script.
+    TIMING.end('html')
+    TIMING.start('js')
+  //JS_FILES_CONTAINER
+  script.
+    TIMING.end('js')
+  - importer.import('/bundle/vendor.js', '/bundle/app.js')

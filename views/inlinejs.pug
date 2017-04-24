@@ -1,0 +1,54 @@
+script.
+  (function(global){
+    global.CONFIG = {
+      debug: #{DEBUG || false},
+      env: "#{ENV}",
+      app: "#{APP}",
+      staticUrlPrefix: "#{STATIC_URL_PREFIX}",
+      appUrlPrefix: "#{APP_URL_PREFIX}",
+      appVersion: "#{APP_VERSION}",
+      pattern: "#{PATTERN}",
+      template: "#{TEMPLATE}"
+    };
+    var TIMING = {
+      data: {},
+      startTimes: {},
+      start: function(tag){
+        this.startTimes[tag] = new Date().getTime();
+        return this;
+      },
+      end: function(tag, startTag){
+        var startTimes = this.startTimes;
+        var start = startTimes[tag] || startTimes[startTag];
+        if(start){
+          this.data[tag] = new Date().getTime() - start;
+        }
+        return this;
+      },
+      toJSON : function(){
+        return this.data;
+      }
+    };
+    TIMING.start('html');
+    TIMING.start('page');
+    global.TIMING = TIMING;
+    global.onerror = function(msg, url , line, row, err){
+      var stack = '';
+      if(err){
+        stack = err.stack;
+      }
+      var data = {
+        url: url,
+        line: line,
+        row: row,
+        msg: msg,
+        stack: stack,
+        type: 'uncaughtException'
+      };
+      
+      if(CONFIG.env === 'development'){
+        alert(JSON.stringify(data));
+      }
+    };
+  })(this);
+  
