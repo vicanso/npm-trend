@@ -165,13 +165,3 @@ exports.query = (condition) => {
   const NPM = Models.get('Npm');
   return NPM.find(condition);
 };
-
-// exports.updateModules([
-//   'lodash',
-//   'underscore',
-//   'request',
-//   'superagent',
-//   'express',
-//   'koa',
-//   'mongoose',
-//  ]);
