@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const {
   Object,
   String,
-  Array,
+  Number,
 } = mongoose.Schema.Types;
 
 module.exports = {
@@ -45,13 +45,34 @@ module.exports = {
       },
     },
     scores: Object,
+    downloads: {
+      latest: Number,
+      week: Number,
+      month: Number,
+      quarter: Number,
+    },
   },
   indexes: [
     {
       name: 1,
     },
     {
+      createdTime: 1,
+    },
+    {
       'latest.time': 1,
+    },
+    {
+      'downloads.latest': 1,
+    },
+    {
+      'downloads.week': 1,
+    },
+    {
+      'downloads.month': 1,
+    },
+    {
+      'downloads.quarter': 1,
     },
   ],
 };
