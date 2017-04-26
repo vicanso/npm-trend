@@ -15,7 +15,6 @@ module.exports = {
     },
     description: {
       type: String,
-      required: true,
     },
     readme: String,
     maintainers: [Object],
@@ -51,6 +50,13 @@ module.exports = {
       month: Number,
       quarter: Number,
     },
+    dependeds: {
+      latest: Number,
+      week: Number,
+      month: Number,
+      quarter: Number,
+    },
+    dependedCount: Number,
   },
   indexes: [
     {
@@ -73,6 +79,18 @@ module.exports = {
     },
     {
       'downloads.quarter': 1,
+    },
+    {
+      'dependeds.latest': 1,
+    },
+    {
+      'dependeds.week': 1,
+    },
+    {
+      'dependeds.month': 1,
+    },
+    {
+      'dependeds.quarter': 1,
     },
   ],
 };

@@ -11,9 +11,11 @@ module.exports = {
       type: String,
       required: true,
     },
-    count: {
+    downloads: {
       type: Number,
-      required: true,
+    },
+    dependeds: {
+      type: Number,
     },
     name: {
       type: String,
