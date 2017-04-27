@@ -129,6 +129,9 @@ exports.updateDownloads = async (name) => {
   const downloadsList = await npmApis.getDownloads(name, start, end);
   await Promise.each(downloadsList, async (item) => {
     const downloads = item.downloads;
+    if (!downloads) {
+      return;
+    }
     const date = item.day;
     const query = {
       name,

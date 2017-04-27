@@ -1,23 +1,78 @@
-@import './main-header'
-@import './main-nav'
-.api-view
-  ul
-    position fixed
-    left 0
-    top 51px
-    bottom 0
-    margin 0
-    list-style none
-    width 150px
-    border-right 1px solid #e5e5e5
-    padding 0
-    li
-      a
-        padding 10px
+@import 'nib'
+@import './common'
+
+.home-view
+  .header-wrapper
+    $headerHeight = 80px
+    background-color $COLOR_PURPLE 
+    box-sizing content-box
+    width 100%
+    display table
+    color #fff
+    table-layout fixed
+    height $headerHeight
+    > *
+      display table-cell
+      vertical-align middle
+    .logo
+      font-family Oleo Script,cursive
+      font-size 32px
+      width 190px
+      padding-left 20px
+    .search-component
+      $searchBoxHeight = 40px
+      height $searchBoxHeight
+      background #fff
+      border-radius 3px
+      padding 0 5px
+      position relative
+      overflow hidden
+      .search
         display block
-        &:hover
-          text-decoration none
-          background-color #4078c0
-          color #fff
-  .preview
-    margin-left 160px
+        height 100%
+        width 40px
+        background $COLOR_GREEN
+        position absolute
+        right 0
+        top 0
+        border none
+        outline none
+        font-size 16px
+      input
+        border none
+        padding 12px
+        box-shadow none
+        outline none
+        width 100%
+    .functions
+      width 100px
+      padding-left 20px
+      a
+        font-size 32px
+        color #fff
+  .modules-wrapper
+    margin 0 20px
+    ul
+      marign 0
+      padding 0
+      list-style none
+      li
+        margin-bottom 30px
+      h4
+        font-size 16px
+        margin 15px 0
+        span
+          font-size 12px
+          margin-left 5px
+          color $COLOR_DARK_GRAY
+      p
+        margin 8px 0
+      .keywords
+        font-size 12px
+        a
+          color $COLOR_DARK_GRAY
+        span
+          color $COLOR_DARK_GRAY
+          margin-right 5px
+    .updatedAt
+      color $COLOR_DARK_BLUE

@@ -1,14 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import * as ReactRedux from 'react-redux';
 import * as _ from 'lodash';
+import jquery from 'jquery';
 
 import * as globals from './helpers/globals';
 import * as statsService from './services/stats';
-import store from './store';
-import App from './containers/app';
 import * as http from './helpers/http';
 
+console.dir(jquery);
 
 function globarErrorCatch() {
   globals.set('onerror', (msg, url, line, row, err) => {
@@ -56,20 +53,10 @@ function statistics() {
     .catch(err => console.error('post statistics fail, %s', err));
 }
 
-function initRender() {
-  const Provider = ReactRedux.Provider;
-  ReactDOM.render(
-    <Provider store={store()}>
-      <App />
-    </Provider>,
-    document.getElementById('rootContainer'));
-}
-
 
 _.defer(() => {
   globarErrorCatch();
   statistics();
-  initRender();
   // set global http request timeout
   http.timeout(10 * 1000);
 });

@@ -4,16 +4,9 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     vendor: [
-      'classnames',
       'lodash',
       'debug',
-      'react',
-      'react-dom',
-      'react-enroute',
-      'react-redux',
-      'redux',
-      'redux-logger',
-      'redux-thunk',
+      'jquery',
       'superagent',
     ],
     app: './public/js/bootstrap.js',

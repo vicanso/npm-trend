@@ -1,3 +1,8 @@
+require('dnscache')({
+  enable: true,
+  ttl: 600,
+  cachesize: 100,
+});
 const logger = require('timtam-logger');
 const stringify = require('simple-stringify');
 
@@ -13,12 +18,14 @@ function initLogger() {
     prefix: config.name,
   });
   logger.wrap(console);
-  logger.add(config.udpLog);
+  if (config.udpLog) {
+    logger.add(config.udpLog);
+  } else {
+    logger.add('console');
+  }
 }
 
-if (config.udpLog) {
-  initLogger();
-}
+initLogger();
 
 localRequire('helpers/bluebird');
 localRequire('helpers/joi');

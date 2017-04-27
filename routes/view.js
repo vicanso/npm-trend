@@ -1,3 +1,3 @@
 module.exports = [
-  '[GET] [/,/login,/register] [v.home & c.home]',
+  '[GET] [/] [v.home & c.home]',
 ];

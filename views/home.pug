@@ -1,7 +1,50 @@
 extends ./layout
-block bodyContainer
-  a(href="https://github.com/vicanso/albi", style='position:absolute;right:0;top:0')
-    img(src=IMG_URL("/img/forkme.png"))
-  #rootContainer
 
+mixin Keywords(keywords)
+  .keywords
+    - var last = keywords.length - 1
+    each keyword, index in keywords
+      a(href='/') #{keyword}
+      if index !== last
+        span ,
+mixin Downloads(downloads)
+  .downloads
+    .latest #{downloads.latest}
+    .week #{downloads.week}
+    .month #{downloads.month}
+    .quarter #{downloads.quarter}
+
+mixin Modules(items)
+  ul
+    each item in items
+      li
+        h4
+          a(href=`https://npmjs.org/package/${item.name}`) #{item.name}
+          span (#{item.latest.version})
+        p #{item.description}
+        if item.keywords && item.keywords.length
+          +Keywords(item.keywords)
+        - var downloads = item.downloads
+        if downloads
+          +Downloads(downloads)
+        .updatedAt update #{moment(item.latest.time).fromNow()} by #{item.author.name}
+
+block bodyContainer
+  .home-view
+    header.header-wrapper
+      .logo Find-npms
+      .search-box: .search-component
+        button.search
+          i.fa.fa-search(aria-hidden='true')
+        input(type='text')
+      .functions
+        a(href='https://github.com/vicanso/npm')
+          i.fa.fa-github(aria-hidden='true')
+    
+    .modules-wrapper
+      - var modules = viewData.items;
+      if !modules || !modules.length
+        p No modules found
+      else
+        +Modules(modules)
   - importer.import('/css/home.css');
