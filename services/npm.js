@@ -54,7 +54,7 @@ async function updatePeriodCounts(name) {
  */
 exports.update = async (name) => {
   const basic = await npmApis.get(name);
-  if (!basic) {
+  if (!basic || !basic.author) {
     throw errors.get(301);
   }
   let latestVersion;
@@ -158,7 +158,13 @@ exports.updateDownloads = async (name) => {
  */
 exports.updateModules = async (names) => {
   const NPM = Models.get('Npm');
+  const IgnoreNPM = Models.get('Ignore-npm');
+  const ignoreDocs = await IgnoreNPM.find({}, 'name');
+  const ignoreItems = _.map(ignoreDocs, item => item.name).sort();
   const doUpdate = async (name) => {
+    if (_.sortedIndexOf(ignoreItems, name) !== -1) {
+      return Promise.resolve();
+    }
     const doc = await NPM.findOne({
       name,
     }, 'latest downloads');
@@ -179,7 +185,14 @@ exports.updateModules = async (names) => {
     }
     return exports.update(name)
         .then(() => console.info(`update ${name} success`))
-        .catch(err => console.error(`update ${name} fail, ${err.message}`));
+        .catch((err) => {
+          console.error(`update ${name} fail, ${err.message}`);
+          if (err.code === 301) {
+            new IgnoreNPM({
+              name,
+            }).save().catch(console.error);
+          }
+        });
   };
   await Promise.map(names, doUpdate, {
     concurrency: 10,
