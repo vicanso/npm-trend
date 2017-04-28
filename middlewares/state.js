@@ -70,6 +70,24 @@ module.exports = (versions) => {
     state.URL = anchorUrlFn;
     state.importer = importer;
     state.DEBUG = _.get(ctx, 'state.debugParams.DEBUG', false);
+    state.numberFormat = (value) => {
+      if (_.isNil(value)) {
+        return '--';
+      }
+      const thousand = 1000;
+      const million = thousand * thousand;
+      const billion = million * thousand;
+      if (value > billion) {
+        return `${_.round(value / billion, 2)}b`;
+      }
+      if (value > million) {
+        return `${_.round(value / million, 2)}m`;
+      }
+      if (value > thousand) {
+        return `${_.round(value / thousand)}k`;
+      }
+      return `${value}`;
+    };
     return next();
   };
 };

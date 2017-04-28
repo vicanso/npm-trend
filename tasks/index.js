@@ -1,19 +1,20 @@
 const schedule = require('node-schedule');
 const npmApis = require('npm-apis');
 const _ = require('lodash');
+const request = require('superagent');
 
 const npmService = localRequire('services/npm');
 localRequire('tasks/performance')(10 * 1000);
 localRequire('tasks/backend')(300 * 1000);
 
 function getAll() {
-  return new Promise((resolve, reject) => {
-    require('fs').readFile('/Users/xieshuzhou/Downloads/all.json', (err, buf) => {
-      if (err) {
-        return reject(err);
+  return request.get('http://oidmt881u.bkt.clouddn.com/all.json')
+    .then((res) => {
+      const data = res.body;
+      if (_.isEmpty(data)) {
+        throw new Error('Get moudles fail, it\'s empty');
       }
       const modules = [];
-      const data = JSON.parse(buf);
       _.forEach(data, (pkg, key) => {
         if (key === '_updated') {
           return;
@@ -23,19 +24,15 @@ function getAll() {
         }
         modules.push(pkg.name);
       });
-      return resolve(modules);
+      return modules;
     });
-  });  
 }
 
 function getDependeds() {
-  return new Promise((resolve, reject) => {
-    require('fs').readFile('/Users/xieshuzhou/Downloads/depended.json', (err, buf) => {
-      if (err) {
-        return reject(err);
-      }
+  return request.get('http://oidmt881u.bkt.clouddn.com/depended.json')
+    .then((res) => {
       const arr = [];
-      _.forEach(JSON.parse(buf).rows, (item) => {
+      _.forEach(res.body.rows, (item) => {
         const name = item.key[0].trim();
         if (name) {
           arr.push({
@@ -44,9 +41,8 @@ function getDependeds() {
           });
         }
       });
-      return resolve(arr);
+      return arr;
     });
-  });
 }
 
 async function updateModules(modules) {
@@ -83,10 +79,7 @@ async function updateDependeds() {
 }
 
 if (process.env.ENABLE_JOB) {
-  schedule.scheduleJob('56 21 * * *', updateModules);
+  schedule.scheduleJob('54 21 * * *', updateModules);
   schedule.scheduleJob('30 18 * * *', updateModulesDownloads);
   schedule.scheduleJob('00 02 * * *', updateDependeds);
 }
-
-// updateDependeds();
-// updateModules();

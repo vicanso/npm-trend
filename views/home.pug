@@ -9,10 +9,15 @@ mixin Keywords(keywords)
         span ,
 mixin Downloads(downloads)
   .downloads
-    .latest #{downloads.latest}
-    .week #{downloads.week}
-    .month #{downloads.month}
-    .quarter #{downloads.quarter}
+    each type in ['latest', 'week', 'month', 'quarter']
+      - var download = downloads[type];
+      if download > 1000
+        - download = `${_.ceil(download / 1000, 2)}k`
+      div(class=type, title=`the download of ${type}`)
+        span.type #{type}
+        span.count #{download}
+    .tips(data-content='The downloads of the moudle, latest, week, month, quarter')
+      +FontIcon('fa-question-circle-o')
 
 mixin Modules(items)
   ul
@@ -35,11 +40,11 @@ block bodyContainer
       .logo Find-npms
       .search-box: .search-component
         button.search
-          i.fa.fa-search(aria-hidden='true')
+          +FontIcon('fa-search')
         input(type='text')
       .functions
         a(href='https://github.com/vicanso/npm')
-          i.fa.fa-github(aria-hidden='true')
+          +FontIcon('fa-github')
     
     .modules-wrapper
       - var modules = viewData.items;

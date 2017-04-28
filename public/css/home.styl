@@ -31,7 +31,7 @@
         display block
         height 100%
         width 40px
-        background $COLOR_GREEN
+        background $COLOR_LIGHT_GREEN
         position absolute
         right 0
         top 0
@@ -69,10 +69,37 @@
         margin 8px 0
       .keywords
         font-size 12px
+        word-wrap break-word
+        overflow-wrap break-word
         a
           color $COLOR_DARK_GRAY
         span
           color $COLOR_DARK_GRAY
           margin-right 5px
+    .downloads
+      margin 5px 0
+      > *
+        display inline-block
+        margin-right 8px
+        border-radius 3px
+        color #fff
+        overflow hidden
+        font-weight 600
+        .type
+          padding 2px 4px 2px 8px
+          background-color $COLOR_DARK
+        .count
+          padding 2px 8px 2px 4px
+        &.tips
+          font-size 16px 
+          color $COLOR_DARK
+        &.latest .count
+          background-color $COLOR_GREEN
+        &.week .count
+          background-color $COLOR_RED
+        &.month .count
+          background-color $COLOR_LIGHT_GREEN
+        &.quarter .count
+          background-color $COLOR_LIGHT_BLACK
     .updatedAt
       color $COLOR_DARK_BLUE
