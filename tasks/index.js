@@ -79,7 +79,7 @@ async function updateDependeds() {
 }
 
 if (process.env.ENABLE_JOB) {
-  schedule.scheduleJob('54 21 * * *', updateModules);
-  schedule.scheduleJob('30 18 * * *', updateModulesDownloads);
-  schedule.scheduleJob('00 02 * * *', updateDependeds);
+  schedule.scheduleJob('00 01 * * *', updateModules);
+  schedule.scheduleJob('00 03 * * *', updateModulesDownloads);
+  schedule.scheduleJob('00 05 * * *', updateDependeds);
 }

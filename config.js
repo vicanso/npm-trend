@@ -62,3 +62,5 @@ exports.mongoUri = process.env.MONGO || 'mongodb://127.0.0.1/npm';
 // redis uri
 // [redis:]//[[user][:password@]][host][:port][/db-number][?db=db-number[&password=bar[&option=value]]]
 exports.redisUri = process.env.REDIS || 'redis://127.0.0.1/';
+
+exports.udpLog = process.env.UDP_LOG;

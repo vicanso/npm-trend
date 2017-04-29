@@ -2,6 +2,7 @@ extends ./layout
 
 mixin Keywords(keywords)
   .keywords
+    +FontIcon('fa-tags mright5')
     - var last = keywords.length - 1
     each keyword, index in keywords
       a(href='/') #{keyword}
@@ -10,12 +11,9 @@ mixin Keywords(keywords)
 mixin Downloads(downloads)
   .downloads
     each type in ['latest', 'week', 'month', 'quarter']
-      - var download = downloads[type];
-      if download > 1000
-        - download = `${_.ceil(download / 1000, 2)}k`
       div(class=type, title=`the download of ${type}`)
         span.type #{type}
-        span.count #{download}
+        span.count #{numberFormat(downloads[type])}
     .tips(data-content='The downloads of the moudle, latest, week, month, quarter')
       +FontIcon('fa-question-circle-o')
 
@@ -37,7 +35,7 @@ mixin Modules(items)
 block bodyContainer
   .home-view
     header.header-wrapper
-      .logo Find-npms
+      .logo npm trend 
       .search-box: .search-component
         button.search
           +FontIcon('fa-search')
@@ -45,6 +43,8 @@ block bodyContainer
       .functions
         a(href='https://github.com/vicanso/npm')
           +FontIcon('fa-github')
+        a(href='javascript:;')
+          +FontIcon('fa-filter')
     
     .modules-wrapper
       - var modules = viewData.items;

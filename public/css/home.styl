@@ -21,6 +21,7 @@
       padding-left 20px
     .search-component
       $searchBoxHeight = 40px
+      max-width 400px
       height $searchBoxHeight
       background #fff
       border-radius 3px
@@ -44,12 +45,14 @@
         box-shadow none
         outline none
         width 100%
+        color $COLOR_DARK
     .functions
-      width 100px
+      width 90px
       padding-left 20px
       a
-        font-size 32px
+        font-size 24px
         color #fff
+        margin-right 15px
   .modules-wrapper
     margin 0 20px
     ul
@@ -57,7 +60,11 @@
       padding 0
       list-style none
       li
-        margin-bottom 30px
+        margin-bottom 20px
+        padding-bottom 20px
+        border-bottom 1px solid rgba(203, 203, 203, 0.3)
+        &:last-child
+          border-bottom none
       h4
         font-size 16px
         margin 15px 0

@@ -246,9 +246,9 @@ async function updateDependeds(data) {
 
   const increase = count - _.get(doc, 'dependeds.latest', 0);
   // 如果增加量小于等于0，则跳过
-  // if (increase <= 0) {
-  //   return;
-  // }
+  if (increase <= 0) {
+    return;
+  }
   const countDoc = await Count.findOne({
     name,
     date: today,
