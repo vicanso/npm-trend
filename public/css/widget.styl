@@ -1,74 +1,27 @@
-@import './common'    
-.pure-button-block
-  display block
-  width 100%
+@import 'nib'
+@import './common'
 
-.flash
-  position relative
-  padding 15px
-  font-size 14px
-  line-height 1.5
-  color #246
-  background-color #e2eef9
-  border 1px solid #bac6d3
+
+.tooltip
+  box-shadow 0 0 0 1px rgba(16, 22, 26, 0.1), 0 2px 4px rgba(16, 22, 26, 0.2), 0 8px 24px rgba(16, 22, 26, 0.2)
+  transform scale(1)
+  z-index 20
   border-radius 3px
-  &.flash-error
-    color #911
-    background-color #fcdede
-    border-color #d2b2b2
-    
-.dropdown
-  position absolute
-  top 100%
-  left 0
-  z-index 9
-  padding 5px 0
-  margin-top 2px
   background-color #fff
-  background-clip padding-box
-  border 1px solid rgba(0, 0, 0, 0.15)
-  border-radius 4px
-  box-shadow 0 3px 12px rgba(0,0,0,0.15)
-  &::before, &::after
+  padding 10px 15px
+  position absolute
+  $arrowWidth = 8px
+  color $COLOR_LIGHT_BLACK
+  width 360px
+  .arrow-up, .arrow-up-shadow
     position absolute
-    display inline-block
-    content ""
-    display none
-  &::before
-    border 8px solid transparent
-    border-bottom-color rgba(0,0,0,0.15)
-  &::after
-    border 7px solid transparent
-    border-bottom-color #fff
-  &.sw
-    right 0
-    left auto
-    &::before
-      top -16px
-      right 9px
-      left auto
-      display block
-    &::after
-      top -14px
-      right 10px
-      left auto
-      display block
-  .label
-    padding 4px 15px 0 15px
-    font-size 12px
-    color #767676
-  .divider
-    height 1px
-    margin 8px 1px
-    background-color #e5e5e5
-  .item
-    display block
-    padding 4px 10px 4px 15px
-    overflow hidden
-    color #333
-    text-overflow ellipsis
-    white-space nowrap
-    &:hover, &:active
-      color #fff
-      text-decoration none
-      background-color #4078c0
+    margin-left -($arrowWidth / 2)
+    top -($arrowWidth)
+    width 0
+    height 0
+    border-left $arrowWidth solid transparent
+    border-right $arrowWidth solid transparent
+    border-bottom $arrowWidth solid #fff
+  .arrow-up-shadow
+    border-bottom $arrowWidth solid rgba(16, 22, 26, 0.1)
+    top -($arrowWidth + 1)

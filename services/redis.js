@@ -1,7 +1,21 @@
 const Redis = require('ioredis');
+const _ = require('lodash');
 
 const config = localRequire('config');
 const client = new Redis(config.redisUri);
+
+const delayLog = _.throttle((message, type) => {
+  if (type === 'error') {
+    console.error(`redis error, ${message})`);
+  } else {
+    console.info(`redis ${message}`);
+  }
+}, 3000);
+
+client.on('error', err => delayLog(err.message, 'error'));
+
+client.on('connect', () => delayLog('connected'));
+
 
 const getSessionKey = key => `${config.app}:${key}`;
 

@@ -1,11 +1,10 @@
 import * as _ from 'lodash';
-import jquery from 'jquery';
 
 import * as globals from './helpers/globals';
 import * as statsService from './services/stats';
 import * as http from './helpers/http';
 
-console.dir(jquery);
+import './views/home';
 
 function globarErrorCatch() {
   globals.set('onerror', (msg, url, line, row, err) => {

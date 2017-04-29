@@ -78,13 +78,13 @@ module.exports = (versions) => {
       const million = thousand * thousand;
       const billion = million * thousand;
       if (value > billion) {
-        return `${_.round(value / billion, 2)}b`;
+        return `${_.round(value / billion)}B`;
       }
       if (value > million) {
-        return `${_.round(value / million, 2)}m`;
+        return `${_.round(value / million)}M`;
       }
       if (value > thousand) {
-        return `${_.round(value / thousand)}k`;
+        return `${_.round(value / thousand)}K`;
       }
       return `${value}`;
     };

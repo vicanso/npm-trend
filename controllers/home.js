@@ -64,8 +64,30 @@ module.exports = async (ctx) => {
     .sort(sort)
     .skip(options.offset)
     .limit(options.limit);
-  console.dir(_.first(docs).toJSON());
+  const modules = _.map(docs, (doc) => {
+    const module = doc.toJSON();
+    const publishedTimeList = _.map(module.publishedTime, (item) => {
+      const {
+        version,
+        time,
+      } = item;
+      return `<li>
+        <span class="version">${version}</span>
+        <span class="time">${moment(time).format('YYYY-MM-DD')}</span>
+       </i>`;
+    });
+    let versionTips = 'there is only one major version.';
+    if (publishedTimeList.length > 0) {
+      versionTips = `there are ${publishedTimeList.length} major versions.`;
+    }
+    module.about = `The module is created at <span class="created-time">${moment(module.createdTime).format('YYYY-MM-DD')}</span>, ${versionTips} The latest published time of each version:
+      <ul class="published-time-list">
+        ${publishedTimeList.reverse().join('')}
+      </ul>
+    `;
+    return module;
+  });
   ctx.state.viewData = {
-    items: docs,
+    items: modules,
   };
 };

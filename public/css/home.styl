@@ -1,6 +1,23 @@
 @import 'nib'
 @import './common'
 
+.module-about-tip
+  .created-time
+    color $COLOR_PURPLE
+    margin 0 3px
+    font-weight 600
+  .published-time-list
+    margin 10px 0 0 0
+    padding 0
+    list-style none
+    li
+      line-height 1.6
+      span
+        display inline-block
+        &.version
+          width 30%
+        &.time
+          width 60%
 .home-view
   .header-wrapper
     $headerHeight = 80px
@@ -66,12 +83,18 @@
         &:last-child
           border-bottom none
       h4
-        font-size 16px
+        font-size 20px
         margin 15px 0
         span
           font-size 12px
           margin-left 5px
           color $COLOR_DARK_GRAY
+        .tips
+          margin-left 5px
+          padding 0 2px
+          color $COLOR_PURPLE
+          font-weight 600
+          cursor pointer
       p
         margin 8px 0
       .keywords

@@ -14,8 +14,6 @@ mixin Downloads(downloads)
       div(class=type, title=`the download of ${type}`)
         span.type #{type}
         span.count #{numberFormat(downloads[type])}
-    .tips(data-content='The downloads of the moudle, latest, week, month, quarter')
-      +FontIcon('fa-question-circle-o')
 
 mixin Modules(items)
   ul
@@ -24,6 +22,8 @@ mixin Modules(items)
         h4
           a(href=`https://npmjs.org/package/${item.name}`) #{item.name}
           span (#{item.latest.version})
+          span.tips(data-content=item.about)
+            +FontIcon('fa-question-circle-o')
         p #{item.description}
         if item.keywords && item.keywords.length
           +Keywords(item.keywords)

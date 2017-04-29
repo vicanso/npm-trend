@@ -274,7 +274,6 @@ exports.updateMoudlesDependeds = async (list) => {
   await Promise.map(list, async (item) => {
     try {
       await updateDependeds(item);
-      console.info(`update ${item.name} dependeds success`);
     } catch (err) {
       console.error(`update ${item.name} dependeds fail, ${err.message}`);
     }
