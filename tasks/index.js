@@ -45,7 +45,7 @@ function getDependeds() {
     });
 }
 
-async function updateModules(modules) {
+async function updateModules() {
   try {
     console.info('start to update modules');
     // const modules = await npmApis.getAll();
@@ -79,7 +79,11 @@ async function updateDependeds() {
 }
 
 if (process.env.ENABLE_JOB) {
-  schedule.scheduleJob('00 18 * * *', updateModules);
-  schedule.scheduleJob('00 20 * * *', updateModulesDownloads);
-  schedule.scheduleJob('00 22 * * *', updateDependeds);
+  schedule.scheduleJob('00 00 * * *', updateModules);
+  _.forEach([1, 7, 13, 19], (value) => {
+    const hours = value < 10 ? `0${value}` : `${value}`;
+    schedule.scheduleJob(`00 ${hours} * * *`, updateModulesDownloads);
+  });
+  schedule.scheduleJob('00 03 * * *', updateDependeds);
+  updateModules();
 }

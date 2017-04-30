@@ -158,8 +158,8 @@ exports.updateDownloads = async (name) => {
  */
 exports.updateModules = async (names) => {
   const NPM = Models.get('Npm');
-  const IgnoreNPM = Models.get('Ignore-npm');
-  const ignoreDocs = await IgnoreNPM.find({}, 'name');
+  const Ignore = Models.get('Ignore');
+  const ignoreDocs = await Ignore.find({}, 'name');
   const ignoreItems = _.map(ignoreDocs, item => item.name).sort();
   const doUpdate = async (name) => {
     if (_.sortedIndexOf(ignoreItems, name) !== -1) {
@@ -184,18 +184,17 @@ exports.updateModules = async (names) => {
       }
     }
     return exports.update(name)
-        .then(() => console.info(`update ${name} success`))
         .catch((err) => {
           console.error(`update ${name} fail, ${err.message}`);
           if (err.code === 301) {
-            new IgnoreNPM({
+            new Ignore({
               name,
             }).save().catch(console.error);
           }
         });
   };
   await Promise.map(names, doUpdate, {
-    concurrency: 10,
+    concurrency: 30,
   });
 };
 

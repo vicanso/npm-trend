@@ -1,14 +1,14 @@
 {
-  "name": "npm",
-  "description": "More powerful filter for npm, get the trend of node_modules",
+  "name": "npm-trend",
+  "description": "Get the trend of npm",
   "version": "1.0.0",
   "author": "Tree Xie <vicansocanbico@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vicanso/npm"
+    "url": "https://github.com/vicanso/npm-trend"
   },
   "bugs": {
-    "url": "https://github.com/vicanso/npm/issues",
+    "url": "https://github.com/vicanso/npm-trend/issues",
     "email": "vicansocanbico@gmail.com"
   },
   "main": "./app",

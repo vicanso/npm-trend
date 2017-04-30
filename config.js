@@ -33,8 +33,6 @@ exports.staticOptions = {
 
 // view root path
 exports.viewPath = path.join(__dirname, 'views');
-// jspm file path
-exports.jspmPath = path.join(__dirname, 'jspm');
 // user track cookie
 exports.trackCookie = '_jt';
 /* eslint max-len:0 */
@@ -58,7 +56,7 @@ exports.etcd = process.env.ETCD;
 exports.IP = process.env.IP;
 // mongodb uri
 // mongodb://user:pass@localhost:port,anotherhost:port,yetanother:port/mydatabase
-exports.mongoUri = process.env.MONGO || 'mongodb://127.0.0.1/npm';
+exports.mongoUri = process.env.MONGO || 'mongodb://127.0.0.1/npmtrend';
 // redis uri
 // [redis:]//[[user][:password@]][host][:port][/db-number][?db=db-number[&password=bar[&option=value]]]
 exports.redisUri = process.env.REDIS || 'redis://127.0.0.1/';
