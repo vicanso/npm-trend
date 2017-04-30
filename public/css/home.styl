@@ -3,7 +3,7 @@
 
 .module-about-tip
   .created-time
-    color $COLOR_PURPLE
+    color $COLOR_DARK_BLUE
     margin 0 3px
     font-weight 600
   .published-time-list
@@ -19,9 +19,9 @@
         &.time
           width 60%
 .home-view
+  $headerHeight = 80px
   .header-wrapper
-    $headerHeight = 80px
-    background-color $COLOR_PURPLE 
+    background-color $COLOR_DARK_BLUE 
     box-sizing content-box
     width 100%
     display table
@@ -70,6 +70,32 @@
         font-size 24px
         color #fff
         margin-right 15px
+        &.selected
+          color $COLOR_LIGHT_GREEN
+  .filter-wrapper
+    position absolute
+    left 0
+    right 0
+    top $headerHeight
+    ul
+      border-top $GRAY_BORDER
+      margin 0 
+      padding 10px
+      list-style none
+      background-color $COLOR_DARK_BLUE
+      li
+        display inline-block
+        margin-right 10px
+        a
+          color #fff
+          padding 2px 5px
+          display block
+          &.selected
+            background-color $COLOR_LIGHT_GREEN
+        &.name
+          color $COLOR_LIGHT_GREEN
+      .fa-sort
+        margin-right 5px
   .modules-wrapper
     margin 0 20px
     ul
@@ -79,7 +105,7 @@
       li
         margin-bottom 20px
         padding-bottom 20px
-        border-bottom 1px solid rgba(203, 203, 203, 0.3)
+        border-bottom $GRAY_BORDER
         &:last-child
           border-bottom none
       h4
@@ -92,7 +118,7 @@
         .tips
           margin-left 5px
           padding 0 2px
-          color $COLOR_PURPLE
+          color $COLOR_DARK_BLUE
           font-weight 600
           cursor pointer
       p

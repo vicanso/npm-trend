@@ -4,15 +4,13 @@ import _ from 'lodash';
 
 export default class ToolTip {
   constructor(target, options) {
-    this.target = $(target);
+    this.target = target;
     this.options = _.extend({
       left: '50%',
     }, options);
   }
   render() {
-    const {
-      target,
-    } = this;
+    const target = $(this.target);
     const {
       left,
       className,
@@ -27,16 +25,19 @@ export default class ToolTip {
     if (className) {
       tip.addClass(className);
     }
-    target.on('mouseenter', () => {
-      const offset = target.offset();
-      tip.appendTo('body');
-      tip.find('.arrow-up, .arrow-up-shadow').css('left', left);
-      const percent = parseFloat(left);
-      offset.left -= (tip.outerWidth() * (percent / 100));
-      offset.top += 20;
-      tip.offset(offset);
-    }).on('mouseleave', () => {
-      tip.remove();
-    });
+    const offset = target.offset();
+    tip.appendTo('body');
+    tip.find('.arrow-up, .arrow-up-shadow').css('left', left);
+    const percent = parseFloat(left);
+    offset.left -= (tip.outerWidth() * (percent / 100));
+    offset.top += 20;
+    tip.offset(offset);
+    this.tip = tip;
+  }
+  destroy() {
+    if (!this.tip) {
+      return;
+    }
+    this.tip.remove();
   }
 }

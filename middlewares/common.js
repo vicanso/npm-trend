@@ -5,6 +5,7 @@
 const _ = require('lodash');
 const url = require('url');
 const checker = require('koa-query-checker');
+const cheerio = require('cheerio');
 
 const errors = localRequire('helpers/errors');
 const influx = localRequire('helpers/influx');
@@ -143,5 +144,22 @@ exports.routeStats = () => (ctx, next) => {
   return next().then(() => {
     end();
     setImmediate(delayLog, Date.now() - start);
+  });
+};
+
+exports.htmlSelector = () => (ctx, next) => {
+  const {
+    selector,
+  } = ctx.query;
+  delete ctx.query.selector;
+  if (!selector) {
+    return next();
+  }
+  return next().then(() => {
+    const $ = cheerio.load(ctx.body);
+    ctx.body = {
+      title: $('head title').html(),
+      content: $(selector).html(),
+    };
   });
 };

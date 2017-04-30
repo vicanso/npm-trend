@@ -19,14 +19,15 @@ const _ = require('lodash');
  * curl 'http://host/login'
  */
 module.exports = async (ctx) => {
-  const sortKeys = [
-    'downloads.latest',
-    'downloads.week',
-    'downloads.month',
-    'downloads.quarter',
-    'latest.time',
-    'createdTime',
-  ];
+  const sorts = {
+    'downloads.latest': 'Downloads(latest day)',
+    'downloads.week': 'Downloads(7 days)',
+    'downloads.month': 'Downloads(30 days)',
+    'downloads.quarter': 'Downloads(90 days)',
+    'latest.time': 'Time of latest version',
+    createdTime: 'Time of create',
+  };
+  const sortKeys = _.keys(sorts);
   const options = Joi.validateThrow(ctx.query, {
     sort: Joi.string()
       .valid(sortKeys)
@@ -87,7 +88,12 @@ module.exports = async (ctx) => {
     `;
     return module;
   });
-  ctx.state.viewData = {
-    items: modules,
-  };
+  ctx.setCache(600);
+  _.extend(ctx.state, {
+    title: 'The modules you want',
+    viewData: {
+      sorts,
+      modules,
+    },
+  });
 };

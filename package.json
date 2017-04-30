@@ -37,6 +37,7 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "cheerio": "^0.22.0",
     "debug": "^2.6.1",
     "dnscache": "^1.0.1",
     "etcd-register": "1.0.0",
@@ -67,6 +68,7 @@
     "npm-apis": "^1.0.0",
     "performance-nodejs": "^1.0.6",
     "pug": "^2.0.0-beta11",
+    "qs": "^6.4.0",
     "require-tree": "^1.1.1",
     "simple-stringify": "^1.1.1",
     "superagent": "^3.5.0",

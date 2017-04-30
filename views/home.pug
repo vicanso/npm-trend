@@ -32,22 +32,35 @@ mixin Modules(items)
           +Downloads(downloads)
         .updatedAt update #{moment(item.latest.time).fromNow()} by #{item.author.name}
 
+mixin HeaderView()
+  header.header-wrapper
+    .logo npm trend 
+    .search-box: .search-component
+      button.search
+        +FontIcon('fa-search')
+      input(type='text')
+    .functions
+      a(href='https://github.com/vicanso/npm-trend')
+        +FontIcon('fa-github')
+      a(href='javascript:;').filter
+        +FontIcon('fa-filter')
+
+mixin FilterView()
+  .filter-wrapper.hidden
+    ul(data-type='sort')
+      li.name
+        +FontIcon('fa-sort')
+        | Sort by
+      each desc, key in viewData.sorts
+        li: a(data-key=key, href='javascript:;') #{desc}
+
 block bodyContainer
   .home-view
-    header.header-wrapper
-      .logo npm trend 
-      .search-box: .search-component
-        button.search
-          +FontIcon('fa-search')
-        input(type='text')
-      .functions
-        a(href='https://github.com/vicanso/npm-trend')
-          +FontIcon('fa-github')
-        a(href='javascript:;')
-          +FontIcon('fa-filter')
-    
+    +HeaderView()
+    +FilterView()
+
     .modules-wrapper
-      - var modules = viewData.items;
+      - var modules = viewData.modules;
       if !modules || !modules.length
         p No modules found
       else

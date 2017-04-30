@@ -7,6 +7,7 @@ module.exports = {
       'lodash',
       'debug',
       'jquery',
+      'qs',
       'superagent',
     ],
     app: './public/js/bootstrap.js',
