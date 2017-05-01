@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import $ from 'jquery';
 
 import * as globals from './helpers/globals';
 import * as statsService from './services/stats';
@@ -52,10 +53,37 @@ function statistics() {
     .catch(err => console.error('post statistics fail, %s', err));
 }
 
+function initScroll() {
+  const anchor = $(`
+    <a href="javascript:;" class="scroll-top hidden">
+      <i class="fa fa-chevron-up" aria-hidden="true"></i>
+    </a>
+  `);
+  anchor.appendTo('body');
+  const doc = $(globals.get('document'));
+  let isHidden = true;
+  doc.on('scroll', _.throttle(() => {
+    if (doc.scrollTop() > 500) {
+      if (isHidden) {
+        anchor.removeClass('hidden');
+      }
+      isHidden = false;
+    } else if (!isHidden) {
+      anchor.addClass('hidden');
+      isHidden = true;
+    }
+  }, 500));
+  anchor.click(() => {
+    $('html, body').animate({
+      scrollTop: 0,
+    });
+  });
+}
 
 _.defer(() => {
   globarErrorCatch();
   statistics();
   // set global http request timeout
   http.timeout(10 * 1000);
+  initScroll();
 });
