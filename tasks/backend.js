@@ -59,7 +59,7 @@ module.exports = (interval) => {
   client.addTag('backend:http', `app:${config.app}`, 'ping:http');
   client.ttl(600);
   console.info(`register backend to etcd, config:${stringify.json(data)}`);
-  client.register().then((res) => {
+  client.register().then(() => {
     console.info('register backend etcd config success');
     setTimeout(() => {
       refresh(client, interval);

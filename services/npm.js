@@ -137,17 +137,13 @@ exports.updateDownloads = async (name) => {
       name,
       date,
     };
-    const countDoc = await Count.findOne(query);
-    if (!countDoc) {
-      await new Count({
-        name,
-        date,
-        downloads,
-      }).save();
-      return;
-    }
-    countDoc.set('downloads', downloads);
-    await countDoc.save();
+    await Count.findOneAndUpdate(query, {
+      name,
+      date,
+      downloads,
+    }, {
+      upsert: true,
+    });
   });
   await updatePeriodCounts(name);
 };
@@ -211,7 +207,6 @@ exports.updateModulesDownloads = async () => {
       .skip(start)
       .limit(offset);
     const doDownloadUpdate = name => exports.updateDownloads(name)
-      .then(() => console.info(`update ${name} downloads success`))
       .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
     return Promise.map(docs, item => doDownloadUpdate(item.name), {
       concurrency: 10,
@@ -248,20 +243,16 @@ async function updateDependeds(data) {
   if (increase <= 0) {
     return;
   }
-  const countDoc = await Count.findOne({
+  await Count.findOneAndUpdate({
     name,
     date: today,
+  }, {
+    name,
+    date: today,
+    dependeds: increase,
+  }, {
+    upsert: true,
   });
-  if (!countDoc) {
-    await new Count({
-      name,
-      date: today,
-      dependeds: increase,
-    }).save();
-  } else {
-    countDoc.set('dependeds', increase);
-    await countDoc.save();
-  }
   await updatePeriodCounts(name);
 }
 

@@ -1,5 +1,4 @@
 const schedule = require('node-schedule');
-const npmApis = require('npm-apis');
 const _ = require('lodash');
 const request = require('superagent');
 
@@ -61,9 +60,9 @@ async function updateModulesDownloads() {
   try {
     console.info('start to update modules downloads');
     await npmService.updateModulesDownloads();
-    console.info('update module downloads success');
+    console.info('update modules downloads success');
   } catch (err) {
-    console.error(`update module downloads fail, ${err.message}`);
+    console.error(`update modules downloads fail, ${err.message}`);
   }
 }
 
@@ -80,7 +79,7 @@ async function updateDependeds() {
 
 if (process.env.ENABLE_JOB) {
   schedule.scheduleJob('00 00 * * *', updateModules);
-  _.forEach([1, 7, 13, 19], (value) => {
+  _.forEach([1, 9, 17], (value) => {
     const hours = value < 10 ? `0${value}` : `${value}`;
     schedule.scheduleJob(`00 ${hours} * * *`, updateModulesDownloads);
   });

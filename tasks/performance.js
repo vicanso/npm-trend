@@ -55,6 +55,7 @@ module.exports = interval => setInterval(() => {
     cpuUsedPercent,
   } = performanceData;
   const lagIndex = _.sortedIndex([10, 70], lag);
+  /* eslint camelcase:0 */
   const physical = parseInt(total_physical_size / MB, 10);
   const memoryIndex = _.sortedIndex([100, 200, 500], physical);
   const connectingIndex = _.sortedIndex([200, 500, 1000], connectingTotal);

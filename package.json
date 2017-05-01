@@ -24,7 +24,7 @@
   "scripts": {
     "size": "t=\"$(npm pack .)\"; wc -c \"${t}\"; tar tvf \"${t}\"; rm \"${t}\";",
     "eslint-es6": "node ./node_modules/.bin/eslint public/js/*.js public/js/*/*.js",
-    "eslint-node": "node ./node_modules/.bin/eslint *.js helpers/*.js middlewares/*.js router/*.js controllers/*.js models/*.js services/*.js",
+    "eslint-node": "node ./node_modules/.bin/eslint *.js helpers/*.js middlewares/*.js router/*.js controllers/*.js models/*.js services/*.js tasks/*.js",
     "eslint": "npm run eslint-node && npm run eslint-es6",
     "coverage": "node ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test/*.js test/controllers/*.js test/helpers/*.js test/middlewares/*.js --",
     "test": "npm run eslint && NODE_ENV=test INFLUX=http://127.0.0.1:8086/mydb MONGO=mongodb://127.0.0.1/npm REDIS=redis://127.0.0.1:6379 npm run coverage",
