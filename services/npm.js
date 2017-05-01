@@ -182,11 +182,9 @@ exports.updateModules = async (names) => {
     return exports.update(name)
         .catch((err) => {
           console.error(`update ${name} fail, ${err.message}`);
-          if (err.code === 301) {
-            new Ignore({
-              name,
-            }).save().catch(console.error);
-          }
+          new Ignore({
+            name,
+          }).save().catch(console.error);
         });
   };
   await Promise.map(names, doUpdate, {
