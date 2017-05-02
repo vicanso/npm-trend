@@ -7,11 +7,11 @@ const errors = localRequire('errors');
 
 function getErrorByCode(code, lang = 'en') {
   const item = errors[code] || {
-    code,
+    code: `${code}`,
   };
   const err = new Error(item[lang] || 'Unknown error');
   return createError(item.status || 500, err, {
-    code,
+    code: `${code}`,
     expected: true,
   });
 }

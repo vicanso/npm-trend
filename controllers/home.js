@@ -34,6 +34,8 @@ module.exports = async (ctx) => {
       .default(_.first(sortKeys)),
     sortBy: Joi.string().valid('desc', 'asc').default('desc'),
     offset: Joi.number().integer().default(0),
+    keyword: Joi.string().max(20).optional(),
+    q: Joi.string().max(20).optional(),
     limit: Joi.number().integer().min(1).max(100)
       .default(20),
     created: Joi.string()
@@ -60,13 +62,33 @@ module.exports = async (ctx) => {
       $gte: getTime(options.updated),
     };
   }
-  const docs = await npmService.query(conditions)
+  if (options.keyword) {
+    conditions.keywords = options.keyword;
+  }
+  if (options.q) {
+    conditions.name = new RegExp(options.q);
+  }
+  const result = await npmService.query(conditions)
     .select('-readme -versions -maintainers')
     .sort(sort)
     .skip(options.offset)
     .limit(options.limit);
+  const docs = [];
+  _.forEach(result, (doc) => {
+    const item = doc.toJSON();
+    if (item.name !== options.q) {
+      docs.push(item);
+    }
+  });
+  // get the name match the q
+  if (options.offset === 0 && options.q) {
+    const matchModule = await npmService.get(options.q);
+    if (matchModule) {
+      docs.unshift(matchModule);
+    }
+  }
   const modules = _.map(docs, (doc) => {
-    const module = doc.toJSON();
+    const module = doc;
     const publishedTimeList = _.map(module.publishedTime, (item) => {
       const {
         version,
@@ -94,6 +116,7 @@ module.exports = async (ctx) => {
     viewData: {
       sorts,
       modules,
+      query: ctx.query,
     },
   });
 };

@@ -182,6 +182,9 @@ exports.updateModules = async (names) => {
     return exports.update(name)
         .catch((err) => {
           console.error(`update ${name} fail, ${err.message}`);
+          if (err.code !== 'INVALID' && err.code !== '301') {
+            return;
+          }
           new Ignore({
             name,
           }).save().catch(console.error);
@@ -278,4 +281,21 @@ exports.updateMoudlesDependeds = async (list) => {
 exports.query = (condition) => {
   const NPM = Models.get('Npm');
   return NPM.find(condition);
+};
+
+
+/**
+ * Get the module by name
+ * @param {String} name
+ * @returns {Object}
+ */
+exports.get = async (name) => {
+  const NPM = Models.get('Npm');
+  const doc = await NPM.findOne({
+    name,
+  });
+  if (!doc) {
+    return null;
+  }
+  return doc.toJSON();
 };

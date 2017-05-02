@@ -68,14 +68,14 @@
     "npm-apis": "^1.0.0",
     "performance-nodejs": "^1.0.6",
     "pug": "^2.0.0-beta11",
-    "qs": "^6.4.0",
     "require-tree": "^1.1.1",
     "simple-stringify": "^1.1.1",
     "superagent": "^3.5.0",
     "supertiming": "^1.1.0",
     "timtam-logger": "^1.1.1",
     "ulid": "^0.1.0",
-    "url-join": "^2.0.1"
+    "url-join": "^2.0.1",
+    "url-parse": "^1.1.8"
   },
   "devDependencies": {
     "babel-core": "^6.23.1",

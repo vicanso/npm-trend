@@ -7,8 +7,8 @@ module.exports = {
       'lodash',
       'debug',
       'jquery',
-      'qs',
       'superagent',
+      'url-parse',
     ],
     app: './public/js/bootstrap.js',
   },
@@ -17,16 +17,14 @@ module.exports = {
     filename: '[name].js',
   },
   module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        loader: 'babel',
-        query: {
-          presets: ['es2015', 'react'],
-          cacheDirectory: true,
-        },
+    loaders: [{
+      test: /\.js$/,
+      loader: 'babel',
+      query: {
+        presets: ['es2015', 'react'],
+        cacheDirectory: true,
       },
-    ],
+    }, ],
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
@@ -38,9 +36,9 @@ module.exports = {
       //  goes into the vendor chunk)
     }),
     new webpack.SourceMapDevToolPlugin({
-     test: /\.js$/,
-     exclude: /vendor.js/,
-     filename: '[name].[chunkhash].map',
-   }),
+      test: /\.js$/,
+      exclude: /vendor.js/,
+      filename: '[name].[chunkhash].map',
+    }),
   ],
 };

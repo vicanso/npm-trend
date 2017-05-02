@@ -4,8 +4,13 @@ mixin Keywords(keywords)
   .keywords
     +FontIcon('fa-tags mright5')
     - var last = keywords.length - 1
+    - var currentKeyword = viewData.query.keyword;
     each keyword, index in keywords
-      a(href='/') #{keyword}
+      - var cls = ''
+      if keyword === currentKeyword
+        a.selected(href=URL('/')) #{keyword}
+      else
+        a(href=URL(`/?keyword=${keyword}`)) #{keyword}
       if index !== last
         span ,
 mixin Downloads(downloads)
@@ -62,7 +67,9 @@ block bodyContainer
     .modules-wrapper
       - var modules = viewData.modules;
       if !modules || !modules.length
-        p No modules found
+        p.tac
+          +FontIcon('fa-exclamation-triangle mright5')
+          | No modules found
       else
         +Modules(modules)
   - importer.import('/css/home.css');
