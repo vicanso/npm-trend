@@ -1,6 +1,7 @@
 const schedule = require('node-schedule');
 const _ = require('lodash');
 const request = require('superagent');
+const npmApis = require('npm-apis');
 
 const npmService = localRequire('services/npm');
 localRequire('tasks/performance')(10 * 1000);
