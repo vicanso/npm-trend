@@ -47,8 +47,8 @@ function getDependeds() {
 async function updateModules() {
   try {
     console.info('start to update modules');
-    // const modules = await npmApis.getAll();
-    const modules = await getAll();
+    const modules = await npmApis.getAll();
+    // const modules = await getAll();
     await npmService.updateModules(modules);
     console.info('update modules success');
   } catch (err) {
@@ -69,7 +69,7 @@ async function updateModulesDownloads() {
 async function updateDependeds() {
   try {
     console.info('start to update dependeds');
-    const dependeds = await getDependeds();
+    const dependeds = await npmApis.getDependeds();
     await npmService.updateMoudlesDependeds(dependeds);
     console.info('update dependeds success');
   } catch (err) {
