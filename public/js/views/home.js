@@ -4,6 +4,9 @@ import _ from 'lodash';
 import ToolTip from '../components/tooltip';
 import ProgressBar from '../components/progress-bar';
 import {
+  alert,
+} from '../components/dialog';
+import {
   getUrl,
   getQueryParam,
 } from '../helpers/utils';
@@ -15,6 +18,7 @@ import {
 } from '../constants/urls';
 
 let viewWrapper;
+
 
 // set the click event for about tips
 function initAboutTipHandle() {
@@ -134,7 +138,7 @@ function getMore() {
     }).catch((err) => {
       getMoreOptions.isGettingMore = false;
       loading.remove();
-      console.error(err);
+      alert(err.message || 'Load data fail');
     });
 }
 
@@ -150,9 +154,9 @@ function initScrollHandle() {
   }));
 }
 
-// init the keyword handle
-function initKeywordsHandle() {
-  viewWrapper.on('click', '.keywords a', (e) => {
+// init the keyword, author fitler handle
+function initAnchorClickHandle() {
+  viewWrapper.on('click', '.keywords a, a.author', (e) => {
     const target = $(e.currentTarget);
     locationService.push(target.prop('href'));
     e.preventDefault();
@@ -188,7 +192,7 @@ locationService.on('change', (data) => {
     initAboutTipHandle();
     initFilterHandle();
     initScrollHandle();
-    initKeywordsHandle();
+    initAnchorClickHandle();
     initSearchHandle();
   } else {
     const selector = '.modules-wrapper';

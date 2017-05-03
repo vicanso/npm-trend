@@ -35,7 +35,8 @@ mixin Modules(items)
         - var downloads = item.downloads
         if downloads
           +Downloads(downloads)
-        .updatedAt update #{moment(item.latest.time).fromNow()} by #{item.author.name}
+        .updatedAt update #{moment(item.latest.time).fromNow()} by 
+          a.author(href=URL(`/?author=${encodeURIComponent(item.author.name)}`)) #{item.author.name}
 
 mixin HeaderView()
   header.header-wrapper

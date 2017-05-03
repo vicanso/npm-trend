@@ -36,6 +36,7 @@ module.exports = async (ctx) => {
     offset: Joi.number().integer().default(0),
     keyword: Joi.string().max(20).optional(),
     q: Joi.string().max(20).optional(),
+    author: Joi.string().max(40).optional(),
     limit: Joi.number().integer().min(1).max(100)
       .default(20),
     created: Joi.string()
@@ -61,6 +62,9 @@ module.exports = async (ctx) => {
     conditions['latest.time'] = {
       $gte: getTime(options.updated),
     };
+  }
+  if (options.author) {
+    conditions['author.name'] = options.author;
   }
   if (options.keyword) {
     conditions.keywords = options.keyword;

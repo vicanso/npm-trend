@@ -1,15 +1,15 @@
 {
-  "/app.2d674d9111c295f234d7.js": "3630836095",
-  "/bundle/app.js": "2d674d9111c295f234d7",
-  "/bundle/vendor.js": "b463594ae7027b4a3c0a",
+  "/app.696ceb97b491632dc95e.js": "278692727",
+  "/bundle/app.js": "696ceb97b491632dc95e",
+  "/bundle/vendor.js": "3f536f2e368a4db1201b",
   "/css/common.css": "0",
   "/css/font-awesome.min.css": "3771407656",
-  "/css/global.css": "2317351914",
-  "/css/home.css": "585842150",
+  "/css/global.css": "3479091777",
+  "/css/home.css": "3399207259",
   "/css/login-register.css": "3194994627",
   "/css/pure.min.css": "1447019032",
-  "/css/widget.css": "1848336304",
+  "/css/widget.css": "44797097",
   "/img/favicon.ico": "3375527646",
   "/img/forkme.png": "3191153849",
-  "/vendor.b463594ae7027b4a3c0a.js": "1635441311"
+  "/vendor.3f536f2e368a4db1201b.js": "1773466822"
 }

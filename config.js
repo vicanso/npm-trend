@@ -19,7 +19,7 @@ exports.name = process.env.NAME || 'unknown';
 exports.influx = process.env.INFLUX;
 
 // app url prefix for all request
-exports.appUrlPrefix = env === 'development' ? '' : `/${pkg.name}`;
+exports.appUrlPrefix = '';
 
 exports.staticOptions = {
   urlPrefix: '/static',

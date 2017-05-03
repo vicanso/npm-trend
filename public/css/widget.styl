@@ -1,6 +1,15 @@
 @import 'nib'
 @import './common'
 
+.mask
+  position fixed
+  left 0
+  top 0
+  right 0
+  bottom 0
+  z-index 8
+  background-color rgba(0, 0, 0, 0.3)
+
 .tooltip
   box-shadow 0 0 0 1px rgba(16, 22, 26, 0.1), 0 2px 4px rgba(16, 22, 26, 0.2), 0 8px 24px rgba(16, 22, 26, 0.2)
   transform scale(1)
@@ -45,3 +54,22 @@
   font-size 16px
   &:hover
     background-color $COLOR_DARK_BLUE
+
+.dialog
+  position fixed
+  width 80%
+  left 10%
+  top 50%
+  margin-left -1px
+  background-color #fff
+  border $GRAY_BORDER
+  z-index 9
+  broder-radius 3px
+  h4
+    background-color $COLOR_DARK_BLUE
+    margin 0
+    line-height 2.5
+    color #fff
+    text-indent 10px
+  .content
+    padding 20px
