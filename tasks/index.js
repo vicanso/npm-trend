@@ -12,6 +12,12 @@ async function updateModules() {
   try {
     console.info('start to update modules');
     const modules = await npmApis.getAll();
+    if (!modules.length) {
+      return setTimeout(async () => {
+        console.error('the moudles is empty, will try again later');
+        updateModules();
+      }, 5000);
+    }
     await npmService.updateModules(modules);
     console.info('update modules success');
   } catch (err) {
@@ -41,10 +47,10 @@ async function updateDependeds() {
 }
 
 if (process.env.ENABLE_JOB) {
-  _.forEach([1, 9, 17], (value) => {
-    const hours = value < 10 ? `0${value}` : `${value}`;
-    schedule.scheduleJob(`00 ${hours} * * *`, updateModulesDownloads);
-  });
-  schedule.scheduleJob('00 03 * * *', updateDependeds);
+  // _.forEach([1, 9, 17], (value) => {
+  //   const hours = value < 10 ? `0${value}` : `${value}`;
+  //   schedule.scheduleJob(`00 ${hours} * * *`, updateModulesDownloads);
+  // });
+  // schedule.scheduleJob('00 03 * * *', updateDependeds);
   updateModules();
 }
