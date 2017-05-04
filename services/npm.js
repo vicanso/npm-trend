@@ -151,8 +151,9 @@ exports.updateDownloads = async (name) => {
 /**
  * Update the module list
  * @param {any} names
+ * @param {Boolean} forceUpdate 
  */
-exports.updateModules = async (names) => {
+exports.updateModules = async (names, forceUpdate = false) => {
   const NPM = Models.get('Npm');
   const Ignore = Models.get('Ignore');
   const ignoreDocs = await Ignore.find({}, 'name');

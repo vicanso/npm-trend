@@ -8,14 +8,14 @@ localRequire('tasks/performance')(10 * 1000);
 localRequire('tasks/backend')(300 * 1000);
 
 
-async function updateModules() {
+async function updateAllModules() {
   try {
     console.info('start to update modules');
     const modules = await npmApis.getAll();
     if (!modules.length) {
+      console.error('the moudles is empty, will try again later');
       return setTimeout(async () => {
-        console.error('the moudles is empty, will try again later');
-        updateModules();
+        updateAllModules();
       }, 5000);
     }
     await npmService.updateModules(modules);
@@ -24,6 +24,18 @@ async function updateModules() {
     console.error(`update modules fail, ${err.message}`);
   }
 }
+
+async function updateYesterdayMoudles() {
+  try {
+    console.info('start to update yesterday modules');
+    const moudles = await npmApis.getYesterdayUpdates();
+    await npmService.updateModules(modules, true);
+    console.info('update yesterday modules success');
+  } catch (err) {
+    console.error(`update yesterday modules fail, ${err.message}`);
+  }
+}
+
 
 async function updateModulesDownloads() {
   try {
@@ -47,10 +59,13 @@ async function updateDependeds() {
 }
 
 if (process.env.ENABLE_JOB) {
-  // _.forEach([1, 9, 17], (value) => {
-  //   const hours = value < 10 ? `0${value}` : `${value}`;
-  //   schedule.scheduleJob(`00 ${hours} * * *`, updateModulesDownloads);
-  // });
-  // schedule.scheduleJob('00 03 * * *', updateDependeds);
-  updateModules();
+  schedule.scheduleJob('01 00 * * *', updateYesterdayMoudles);
+  _.forEach([1, 9, 17], (value) => {
+    const hours = value < 10 ? `0${value}` : `${value}`;
+    schedule.scheduleJob(`00 ${hours} * * *`, updateModulesDownloads);
+  });
+  schedule.scheduleJob('00 03 * * *', updateDependeds);
+}
+if (process.env.UPDATE_ALL) {
+  updateAllModules();
 }
