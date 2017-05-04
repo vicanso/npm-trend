@@ -1,12 +1,19 @@
+import store from 'store';
+
 import * as http from '../helpers/http';
 import * as crypto from '../helpers/crypto';
+import * as globals from '../helpers/globals';
 import {
   USER_ME,
   USER_LOGIN,
-  USER_LIKE,
   USER_REGISTER,
   USER_LOGOUT,
+  USER_BEHAVIOR,
 } from '../constants/urls';
+import * as locationService from './location';
+
+
+const userBehavior = store.get('userBehavior') || [];
 
 /* eslint no-undef:0 */
 const app = (window.CONFIG && window.CONFIG.app) || 'unknown';
@@ -47,10 +54,26 @@ export function logout() {
     .then(res => res.body || { account: '' });
 }
 
-export function like(data, version = 3) {
-  return http.post(USER_LIKE)
-    .version(version)
-    .noCache()
-    .send(data)
-    .then(res => res.body);
+export function addBehavior(type, data) {
+  userBehavior.push(_.extend({
+    type,
+    url: locationService.getCurrentUrl(),
+  }, data));
+  if (userBehavior.length >= 10) {
+    http.post(USER_BEHAVIOR, userBehavior.slice(0))
+      .catch(console.error);
+    userBehavior.length = 0;
+  }
+  store.set('userBehavior', userBehavior);
+}
+
+export function visit() {
+  const sessionStorage = globals.get('sessionStorage');
+  if (!sessionStorage) {
+    return;
+  }
+  if (!sessionStorage.getItem('visited')) {
+    sessionStorage.setItem('visited', true);
+    addBehavior('uv');
+  }
 }

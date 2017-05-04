@@ -11,6 +11,7 @@ const config = localRequire('config');
 const {
   randomToken,
 } = localRequire('helpers/utils');
+const influx = localRequire('helpers/influx');
 
 /**
  * 从用户信息中选择字段返回给前端使用，避免直接返回时把不应该展示的字段也返回了
@@ -177,7 +178,7 @@ exports.register = async (ctx) => {
 };
 
 /**
- * 用户Like
+ * 用户行为记录
  * @param {Method} POST
  * @param {String} request.body.code 用户Like的编码
  * @prop {Middleware} level(5)
@@ -185,18 +186,13 @@ exports.register = async (ctx) => {
  * @prop {Middleware} session.read
  * @return {Object} 返回用户Like的信息
  */
-exports.like = (ctx) => {
-  const {
-    version,
-    type,
-  } = ctx.versionConfig;
-  if (version < 3) {
-    ctx.set('Warning', 'Version less than 3 is deprecated.');
-  }
-  /* eslint no-param-reassign:0 */
-  ctx.body = {
-    count: 10,
-    version,
-    type,
-  };
+exports.behavior = (ctx) => {
+  _.forEach(ctx.request.body, (item) => {
+    const type = item.type;
+    delete item.type;
+    influx.write('behavior', item, {
+      type,
+    });
+  });
+  ctx.status = 201;
 };

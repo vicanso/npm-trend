@@ -32,7 +32,7 @@
     "docs": "node ./node_modules/.bin/jsdoc -c .jsdoc.json --readme ./README.md",
     "watch": "node node_modules/.bin/webpack --progress --colors --watch",
     "start": "node app",
-    "dev": "nodemon app"
+    "dev": "INFLUX=http://127.0.0.1:8086/npmtrend nodemon app"
   },
   "license": "MIT",
   "dependencies": {
@@ -70,6 +70,7 @@
     "pug": "^2.0.0-beta11",
     "require-tree": "^1.1.1",
     "simple-stringify": "^1.1.1",
+    "store": "^2.0.4",
     "superagent": "^3.5.0",
     "supertiming": "^1.1.0",
     "timtam-logger": "^1.1.1",

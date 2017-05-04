@@ -9,10 +9,12 @@ import {
 import {
   getUrl,
   getQueryParam,
+  getQueryParams,
 } from '../helpers/utils';
 import * as globals from '../helpers/globals';
 import * as viewService from '../services/view';
 import * as locationService from '../services/location';
+import * as npmService from '../services/npm';
 import {
   VIEW_HOME,
 } from '../constants/urls';
@@ -106,6 +108,7 @@ const getMoreOptions = {
   isGettingMore: false,
   offset: 0,
   pageSize: 20,
+  max: 0,
 };
 // get more modules and append to the bottom
 function getMore() {
@@ -113,8 +116,9 @@ function getMore() {
     isGettingMore,
     offset,
     pageSize,
+    max,
   } = getMoreOptions;
-  if (isGettingMore) {
+  if (isGettingMore || offset >= max) {
     return;
   }
   getMoreOptions.isGettingMore = true;
@@ -182,6 +186,24 @@ function initSearchHandle() {
   });
 }
 
+// show the count of modules
+function appendCountTips() {
+  const keys = [
+    'created',
+    'updated',
+    'author',
+    'keyword',
+    'q',
+  ];
+  const params = _.pick(getQueryParams(), keys);
+  const countObj = $('.modules-count-wrapper .count', viewWrapper);
+  countObj.text('--');
+  npmService.count(params).then((count) => {
+    getMoreOptions.max = count;
+    countObj.text(count);
+  });
+}
+
 locationService.on('change', (data) => {
   if (data.path !== VIEW_HOME) {
     return;
@@ -201,6 +223,7 @@ locationService.on('change', (data) => {
       .then(viewData => item.html(viewData.content))
       .catch(console.error);
   }
+  appendCountTips();
   // set search q
   const q = getQueryParam('q');
   if (q) {

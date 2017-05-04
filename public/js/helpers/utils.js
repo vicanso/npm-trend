@@ -19,6 +19,11 @@ export function getQueryParam(key) {
   return urlInfos.query[key];
 }
 
+export function getQueryParams() {
+  const urlInfos = new URL(location.href, true);
+  return urlInfos.query;
+}
+
 export function getUrl(params, extend = true) {
   let currentParams = {};
   const search = location.search;

@@ -151,7 +151,7 @@ exports.updateDownloads = async (name) => {
 /**
  * Update the module list
  * @param {any} names
- * @param {Boolean} forceUpdate 
+ * @param {Boolean} forceUpdate
  */
 exports.updateModules = async (names, forceUpdate = false) => {
   const NPM = Models.get('Npm');
@@ -159,25 +159,27 @@ exports.updateModules = async (names, forceUpdate = false) => {
   const ignoreDocs = await Ignore.find({}, 'name');
   const ignoreItems = _.map(ignoreDocs, item => item.name).sort();
   const doUpdate = async (name) => {
-    if (_.sortedIndexOf(ignoreItems, name) !== -1) {
-      return Promise.resolve();
-    }
-    const doc = await NPM.findOne({
-      name,
-    }, 'latest downloads');
-    if (doc) {
-      // 如果最近一周有更新版本 - 更新信息
-      // 如果最近下载超过1K - 更新间隔为 7 天
-      // 否则 14 天
-      let updateInterval = 14;
-      if (_.get(doc, 'downloads.latest') > 1000) {
-        updateInterval = 7;
-      }
-      const oneDayMs = 24 * 3600 * 1000;
-      const days = _.floor((Date.now() - moment(doc.latest.time).valueOf()) / oneDayMs);
-      // 如果项目7天未更新，而且更新日期非更新区间，直接跳过
-      if (days > 7 && (days % updateInterval) !== 0) {
+    if (!forceUpdate) {
+      if (_.sortedIndexOf(ignoreItems, name) !== -1) {
         return Promise.resolve();
+      }
+      const doc = await NPM.findOne({
+        name,
+      }, 'latest downloads');
+      if (doc) {
+        // 如果最近一周有更新版本 - 更新信息
+        // 如果最近下载超过1K - 更新间隔为 7 天
+        // 否则 14 天
+        let updateInterval = 14;
+        if (_.get(doc, 'downloads.latest') > 1000) {
+          updateInterval = 7;
+        }
+        const oneDayMs = 24 * 3600 * 1000;
+        const days = _.floor((Date.now() - moment(doc.latest.time).valueOf()) / oneDayMs);
+        // 如果项目7天未更新，而且更新日期非更新区间，直接跳过
+        if (days > 7 && (days % updateInterval) !== 0) {
+          return Promise.resolve();
+        }
       }
     }
     return exports.update(name)
@@ -299,4 +301,15 @@ exports.get = async (name) => {
     return null;
   }
   return doc.toJSON();
+};
+
+/**
+ * Get the count of modules
+ * @param {any} condition
+ * @returns
+ */
+exports.count = async (condition) => {
+  const NPM = Models.get('Npm');
+  const count = await NPM.count(condition);
+  return count;
 };

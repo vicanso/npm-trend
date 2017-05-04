@@ -4,6 +4,8 @@ import $ from 'jquery';
 import * as globals from './helpers/globals';
 import * as statsService from './services/stats';
 import * as http from './helpers/http';
+import * as locationService from './services/location';
+import * as userService from './services/user';
 
 import './views/home';
 
@@ -80,10 +82,13 @@ function initScroll() {
   });
 }
 
+locationService.on('change', () => userService.addBehavior('pv'));
+
 _.defer(() => {
   globarErrorCatch();
   statistics();
   // set global http request timeout
   http.timeout(10 * 1000);
   initScroll();
+  userService.visit();
 });

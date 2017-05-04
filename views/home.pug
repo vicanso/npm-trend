@@ -6,7 +6,6 @@ mixin Keywords(keywords)
     - var last = keywords.length - 1
     - var currentKeyword = viewData.query.keyword;
     each keyword, index in keywords
-      - var cls = ''
       if keyword === currentKeyword
         a.selected(href=URL('/')) #{keyword}
       else
@@ -22,6 +21,7 @@ mixin Downloads(downloads)
 
 mixin Modules(items)
   ul
+    - var currentAuthor = viewData.query.author;
     each item in items
       li
         h4
@@ -36,7 +36,11 @@ mixin Modules(items)
         if downloads
           +Downloads(downloads)
         .updatedAt update #{moment(item.latest.time).fromNow()} by 
-          a.author(href=URL(`/?author=${encodeURIComponent(item.author.name)}`)) #{item.author.name}
+          - var author = item.author.name;
+          if currentAuthor === author
+            a.author.selected(href=URL('/')) #{author}
+          else
+            a.author(href=URL(`/?author=${encodeURIComponent(author)}`)) #{author}
 
 mixin HeaderView()
   header.header-wrapper
@@ -64,7 +68,9 @@ block bodyContainer
   .home-view
     +HeaderView()
     +FilterView()
-
+    .modules-count-wrapper There are
+      span.count --
+      | moudles.
     .modules-wrapper
       - var modules = viewData.modules;
       if !modules || !modules.length

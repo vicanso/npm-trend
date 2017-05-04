@@ -123,6 +123,17 @@ const schemas = {
       stripUnknown: true,
     },
   },
+  behavior: {
+    fields: {
+      url: 'string',
+    },
+    tags: {
+      type: [
+        'pv',
+        'uv',
+      ],
+    },
+  },
 };
 
 module.exports = schemas;

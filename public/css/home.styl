@@ -1,24 +1,7 @@
 @import 'nib'
 @import './common'
 
-.module-about-tip
-  .created-time
-    color $COLOR_DARK_BLUE
-    margin 0 3px
-    font-weight 600
-  .published-time-list
-    margin 10px 0 0 0
-    padding 0
-    list-style none
-    li
-      line-height 1.6
-      span
-        display inline-block
-        &.version
-          width 30%
-        &.time
-          width 60%
-.home-view
+headerWrapperCss()
   .header-wrapper
     background-color $COLOR_DARK_BLUE 
     box-sizing content-box
@@ -74,6 +57,27 @@
         margin-right 15px
         &.selected
           color $COLOR_LIGHT_GREEN
+
+
+.module-about-tip
+  .created-time
+    color $COLOR_DARK_BLUE
+    margin 0 3px
+    font-weight 600
+  .published-time-list
+    margin 10px 0 0 0
+    padding 0
+    list-style none
+    li
+      line-height 1.6
+      span
+        display inline-block
+        &.version
+          width 30%
+        &.time
+          width 60%
+
+filterWrapperCss()
   .filter-wrapper
     position absolute
     left 0
@@ -98,18 +102,18 @@
           color $COLOR_LIGHT_GREEN
       .fa-sort
         margin-right 5px
+
+modulesWrapperCss()
   .modules-wrapper
     margin 0 20px
     ul
-      marign 0
+      margin 0
       padding 0
       list-style none
       li
         margin-bottom 20px
         padding-bottom 20px
         border-bottom $GRAY_BORDER
-        &:last-child
-          border-bottom none
       h4
         font-size 20px
         margin 15px 0
@@ -137,6 +141,9 @@
         span
           color $COLOR_DARK_GRAY
           margin-right 5px
+      .author.selected
+        color $COLOR_RED
+        font-weight 60
     .downloads
       margin 5px 0
       > *
@@ -164,3 +171,16 @@
           background-color $COLOR_LIGHT_BLACK
     .updatedAt
       color $COLOR_DARK_BLUE
+
+.home-view
+  headerWrapperCss()
+  filterWrapperCss()
+  .modules-count-wrapper
+    background-color $COLOR_LIGHT_GRAY
+    padding 5px 20px
+    color $COLOR_LIGHT_BLACK
+    font-weight 600 
+    .count 
+      color $COLOR_RED
+      margin 0 3px
+  modulesWrapperCss()

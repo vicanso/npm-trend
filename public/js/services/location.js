@@ -7,17 +7,23 @@ import * as globals from '../helpers/globals';
 const history = globals.get('history');
 const emiter = new EventEmitter();
 let prevPath = '';
+let currentUrl = '';
 
 function emitChange(url) {
   const urlInfos = new URL(url, true);
+  currentUrl = url.replace(urlInfos.origin, '');
   const info = {
     prevPath,
     path: urlInfos.pathname,
     query: urlInfos.query,
-    url,
+    url: currentUrl,
   };
   prevPath = info.path;
   emiter.emit('change', info);
+}
+
+export function getCurrentUrl() {
+  return currentUrl;
 }
 
 export function on(...args) {

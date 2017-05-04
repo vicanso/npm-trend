@@ -1,6 +1,5 @@
 const schedule = require('node-schedule');
 const _ = require('lodash');
-const request = require('superagent');
 const npmApis = require('npm-apis');
 
 const npmService = localRequire('services/npm');
@@ -14,9 +13,10 @@ async function updateAllModules() {
     const modules = await npmApis.getAll();
     if (!modules.length) {
       console.error('the moudles is empty, will try again later');
-      return setTimeout(async () => {
+      setTimeout(async () => {
         updateAllModules();
-      }, 5000);
+      }, 60 * 1000);
+      return;
     }
     await npmService.updateModules(modules);
     console.info('update modules success');
@@ -28,7 +28,7 @@ async function updateAllModules() {
 async function updateYesterdayMoudles() {
   try {
     console.info('start to update yesterday modules');
-    const moudles = await npmApis.getYesterdayUpdates();
+    const modules = await npmApis.getYesterdayUpdates();
     await npmService.updateModules(modules, true);
     console.info('update yesterday modules success');
   } catch (err) {
