@@ -66,6 +66,9 @@ module.exports = {
       createdTime: 1,
     },
     {
+      keywords: 1,
+    },
+    {
       'latest.time': 1,
     },
     {

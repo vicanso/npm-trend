@@ -13,7 +13,7 @@ export const USER_REGISTER = `${appUrlPrfix}/api/users/register`;
 export const USER_LOGOUT = `${appUrlPrfix}/api/users/logout`;
 
 export const NPM_COUNT = `${appUrlPrfix}/api/modules/count`;
-
+export const NPM_DOWNLOADS = `${appUrlPrfix}/api/modules/:name/downloads`;
 export const VIEW_HOME = `${appUrlPrfix}/`;
 export const VIEW_LOGIN = `${appUrlPrfix}/login`;
 export const VIEW_REGISTER = `${appUrlPrfix}/register`;

@@ -6,6 +6,7 @@ import ProgressBar from '../components/progress-bar';
 import {
   alert,
 } from '../components/dialog';
+import Chart from '../components/chart';
 import {
   getUrl,
   getQueryParam,
@@ -51,7 +52,7 @@ function getView(url, selector) {
     return data;
   }).catch((err) => {
     end();
-    throw err;
+    throw new Error(err.response.body.message);
   });
 }
 
@@ -171,18 +172,51 @@ function initSearchHandle() {
   const inputFilter = '.search-component input';
   const doSearch = () => {
     const q = viewWrapper.find(inputFilter).val().trim();
-    if (!q) {
-      return;
+    const params = {};
+    if (q) {
+      params.q = q;
     }
-    locationService.push(getUrl({
-      q,
-    }, false));
+    locationService.push(getUrl(params, false));
   };
   viewWrapper.on('click', '.search-component .search', doSearch);
   viewWrapper.on('keyup', inputFilter, (e) => {
     if (e.keyCode === 0x0d) {
       doSearch();
     }
+  });
+  viewWrapper.on('click', '.search-component .clear', () => {
+    viewWrapper.find(inputFilter).val('');
+  });
+}
+
+function initDownloadTrendHandle() {
+  viewWrapper.on('click', '.modules-wrapper a.download-trend', (e) => {
+    const target = $(e.currentTarget);
+    const moduleItem = target.closest('li');
+    if (target.hasClass('selected')) {
+      target.removeClass('selected');
+      moduleItem.find('.chart-wrapper').remove();
+      return;
+    }
+    target.addClass('selected');
+    const name = target.siblings('.module').text();
+    const chartWrapper = $(`
+      <div class="chart-wrapper">
+        <p class="tac">Loading...</p>
+      <div>
+    `).appendTo(moduleItem);
+    npmService.getDownloads(name, 30).then((data) => {
+      chartWrapper.html('<svg></svg');
+      const chart = new Chart(chartWrapper.find('svg').get(0));
+      const categories = _.map(data, item => item.date);
+      const values = _.map(data, item => item.count);
+      chart.render(categories, [
+        {
+          name,
+          data: values,
+        },
+      ]);
+    }).catch(() => chartWrapper.find('p').text('Loading fail'));
   });
 }
 
@@ -200,7 +234,7 @@ function appendCountTips() {
   countObj.text('--');
   npmService.count(params).then((count) => {
     getMoreOptions.max = count;
-    countObj.text(count);
+    countObj.text(count.toLocaleString());
   });
 }
 
@@ -216,12 +250,13 @@ locationService.on('change', (data) => {
     initScrollHandle();
     initAnchorClickHandle();
     initSearchHandle();
+    initDownloadTrendHandle();
   } else {
     const selector = '.modules-wrapper';
     const item = $(selector, viewWrapper);
     getView(data.url, selector)
       .then(viewData => item.html(viewData.content))
-      .catch(console.error);
+      .catch(err => alert(err.message));
   }
   appendCountTips();
   // set search q

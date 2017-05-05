@@ -5,8 +5,10 @@ module.exports = {
   entry: {
     vendor: [
       'lodash',
+      'dcharts',
       'debug',
       'jquery',
+      'moment',
       'superagent',
       'url-parse',
     ],

@@ -38,6 +38,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "cheerio": "^0.22.0",
+    "dcharts": "^1.1.0",
     "debug": "^2.6.1",
     "dnscache": "^1.0.1",
     "etcd-register": "1.0.0",

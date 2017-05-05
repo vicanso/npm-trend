@@ -25,10 +25,12 @@ mixin Modules(items)
     each item in items
       li
         h4
-          a(href=`https://npmjs.org/package/${item.name}`) #{item.name}
+          a.module(href=`https://npmjs.org/package/${item.name}`) #{item.name}
           span (#{item.latest.version})
           span.tips(data-content=item.about)
             +FontIcon('fa-question-circle-o')
+          a(href='javascript:;', title='download trend').download-trend
+            +FontIcon('fa-area-chart')
         p #{item.description}
         if item.keywords && item.keywords.length
           +Keywords(item.keywords)
@@ -48,12 +50,15 @@ mixin HeaderView()
     .search-box: .search-component
       button.search
         +FontIcon('fa-search')
+      a.clear(href='javascript:;')
+        +FontIcon('fa-times')
+
       input(type='text')
     .functions
-      a(href='https://github.com/vicanso/npm-trend')
-        +FontIcon('fa-github')
       a(href='javascript:;').filter
         +FontIcon('fa-filter')
+      a(href='https://github.com/vicanso/npm-trend')
+        +FontIcon('fa-github')
 
 mixin FilterView()
   .filter-wrapper.hidden
@@ -79,4 +84,4 @@ block bodyContainer
           | No modules found
       else
         +Modules(modules)
-  - importer.import('/css/home.css');
+  - importer.import('/css/home.css')

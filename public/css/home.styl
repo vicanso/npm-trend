@@ -41,6 +41,14 @@ headerWrapperCss()
         border none
         outline none
         font-size 16px
+      .clear
+        position absolute
+        right 45px
+        top 10px
+        padding 0 3px
+        color $COLOR_LIGHT_GRAY
+        &:hover
+          color $COLOR_LIGHT_BLACK
       input
         border none
         padding 12px
@@ -127,6 +135,11 @@ modulesWrapperCss()
           color $COLOR_DARK_BLUE
           font-weight 600
           cursor pointer
+        .download-trend
+          margin-left 10px
+          font-size 14px
+          &.selected
+            color $COLOR_RED
       p
         margin 8px 0
       .keywords
@@ -184,3 +197,5 @@ modulesWrapperCss()
       color $COLOR_RED
       margin 0 3px
   modulesWrapperCss()
+  .chart-wrapper
+    width 100%

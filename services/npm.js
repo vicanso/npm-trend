@@ -213,7 +213,7 @@ exports.updateModulesDownloads = async () => {
     const doDownloadUpdate = name => exports.updateDownloads(name)
       .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
     return Promise.map(docs, item => doDownloadUpdate(item.name), {
-      concurrency: 10,
+      concurrency: 30,
     });
   };
   await Promise.each(arr, update);
@@ -312,4 +312,41 @@ exports.count = async (condition) => {
   const NPM = Models.get('Npm');
   const count = await NPM.count(condition);
   return count;
+};
+
+exports.getDownloads = async (name, begin, end) => {
+  const Count = Models.get('Count');
+  const beginDate = moment(begin, 'YYYY-MM-DD');
+  const oneDay = 24 * 3600 * 1000;
+  const ms = moment(end, 'YYYY-MM-DD').valueOf() - beginDate.valueOf();
+  const dayCount = _.ceil(ms / oneDay) + 1;
+  console.dir({
+    name,
+    date: {
+      $lte: end,
+      $gte: beginDate,
+    },
+  });
+  const docs = await Count.find({
+    name,
+    date: {
+      $lte: end,
+      $gte: begin,
+    },
+  }, 'date downloads');
+  const downloads = {};
+  _.forEach(docs, (doc) => {
+    downloads[doc.date] = doc.downloads;
+  });
+  console.dir(docs);
+  const result = [];
+  for (let i = 0; i < dayCount; i += 1) {
+    const date = beginDate.format('YYYY-MM-DD');
+    result.push({
+      date,
+      count: downloads[date] || 0,
+    });
+    beginDate.add(1, 'day');
+  }
+  return result;
 };
