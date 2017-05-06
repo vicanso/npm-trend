@@ -216,6 +216,7 @@ exports.updateModulesDownloads = async () => {
       .skip(start)
       .limit(offset);
     const doDownloadUpdate = name => exports.updateDownloads(name)
+      .then(() => console.info(`update ${name} downloads success`))
       .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
     return Promise.map(docs, item => doDownloadUpdate(item.name), {
       concurrency: 30,
