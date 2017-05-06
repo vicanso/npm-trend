@@ -38,3 +38,13 @@ export function getUrl(params, extend = true) {
   }
   return `${baseUrl}?${stringify(currentParams)}`;
 }
+
+export function getErrorMessage(err) {
+  if (err.code === 'ECONNABORTED') {
+    return 'Timeout';
+  }
+  if (err.response && err.response.body) {
+    return err.response.body.message;
+  }
+  return err.message;
+}

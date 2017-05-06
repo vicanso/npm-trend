@@ -4,6 +4,7 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     vendor: [
+      'bluebird',
       'lodash',
       'dcharts',
       'debug',

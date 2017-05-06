@@ -6,11 +6,12 @@ import ProgressBar from '../components/progress-bar';
 import {
   alert,
 } from '../components/dialog';
-import Chart from '../components/chart';
+import Trends from '../components/trends';
 import {
   getUrl,
   getQueryParam,
   getQueryParams,
+  getErrorMessage,
 } from '../helpers/utils';
 import * as globals from '../helpers/globals';
 import * as viewService from '../services/view';
@@ -52,25 +53,29 @@ function getView(url, selector) {
     return data;
   }).catch((err) => {
     end();
-    throw new Error(err.response.body.message);
+    throw err;
   });
 }
 
 // set the filter event
 function initFilterHandle() {
   const setFilterSelected = (wrapper) => {
-    const filterKeys = [
-      getQueryParam('sort') || 'downloads.latest',
-    ].sort();
-    const filters = wrapper.find('a');
-    _.forEach(filters, (item) => {
-      const obj = $(item);
-      const key = obj.data('key');
-      if (_.sortedIndexOf(filterKeys, key) !== -1) {
-        obj.addClass('selected');
-      } else {
-        obj.removeClass('selected');
-      }
+    const filterKeys = {
+      sort: getQueryParam('sort') || 'downloads.latest',
+      updated: getQueryParam('updated') || '',
+      created: getQueryParam('created') || '',
+    };
+    _.forEach(wrapper.find('ul'), (list) => {
+      const liObj = $(list);
+      const type = liObj.data('type');
+      _.forEach(liObj.find('a'), (item) => {
+        const obj = $(item);
+        if (filterKeys[type] === obj.data('key')) {
+          obj.addClass('selected');
+        } else {
+          obj.removeClass('selected');
+        }
+      });
     });
   };
   let isShowFilter = false;
@@ -92,13 +97,18 @@ function initFilterHandle() {
     if (target.hasClass('selected')) {
       return;
     }
-    const parent = target.closest('ul');
-    parent.find('a.selected').removeClass('selected');
-    target.addClass('selected');
-    const type = parent.data('type');
-    const params = {};
-    params[type] = target.data('key');
-    const url = getUrl(params);
+    let url = '';
+    if (target.hasClass('reset')) {
+      url = getUrl({}, false);
+    } else {
+      const parent = target.closest('ul');
+      parent.find('a.selected').removeClass('selected');
+      target.addClass('selected');
+      const type = parent.data('type');
+      const params = {};
+      params[type] = target.data('key');
+      url = getUrl(params);
+    }
     locationService.push(url);
     toggleFilter();
   });
@@ -119,7 +129,7 @@ function getMore() {
     pageSize,
     max,
   } = getMoreOptions;
-  if (isGettingMore || offset >= max) {
+  if (isGettingMore || (offset + pageSize) >= max) {
     return;
   }
   getMoreOptions.isGettingMore = true;
@@ -140,10 +150,18 @@ function getMore() {
       getMoreOptions.offset += pageSize;
       loading.remove();
       item.append(viewData.content);
+      if (getMoreOptions.offset + pageSize > max) {
+        item.append(`
+          <div style="margin:20px;text-align:center">
+            <i class="fa fa-stop mright5" aria-hidden="true"></i>
+            Ended
+          </div>
+        `);
+      }
     }).catch((err) => {
       getMoreOptions.isGettingMore = false;
       loading.remove();
-      alert(err.message || 'Load data fail');
+      alert(getErrorMessage(err) || 'Load data fail');
     });
 }
 
@@ -202,21 +220,12 @@ function initDownloadTrendHandle() {
     const name = target.siblings('.module').text();
     const chartWrapper = $(`
       <div class="chart-wrapper">
-        <p class="tac">Loading...</p>
       <div>
     `).appendTo(moduleItem);
-    npmService.getDownloads(name, 30).then((data) => {
-      chartWrapper.html('<svg></svg');
-      const chart = new Chart(chartWrapper.find('svg').get(0));
-      const categories = _.map(data, item => item.date);
-      const values = _.map(data, item => item.count);
-      chart.render(categories, [
-        {
-          name,
-          data: values,
-        },
-      ]);
-    }).catch(() => chartWrapper.find('p').text('Loading fail'));
+    const trends = new Trends(chartWrapper, [
+      name,
+    ]);
+    trends.render();
   });
 }
 

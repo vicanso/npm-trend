@@ -1,3 +1,7 @@
+import Promise from 'bluebird';
+/* eslint import/first:0*/
+window.Promise = Promise;
+
 import * as _ from 'lodash';
 import $ from 'jquery';
 

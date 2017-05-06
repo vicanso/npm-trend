@@ -90,13 +90,13 @@ filterWrapperCss()
     position absolute
     left 0
     right 0
-    top $headerHeight
+    top $headerHeigh
+    background-color $COLOR_DARK_BLUE
     ul
       border-top $GRAY_BORDER
       margin 0 
       padding 10px
       list-style none
-      background-color $COLOR_DARK_BLUE
       li
         display inline-block
         margin-right 10px
@@ -108,8 +108,15 @@ filterWrapperCss()
             background-color $COLOR_LIGHT_GREEN
         &.name
           color $COLOR_LIGHT_GREEN
-      .fa-sort
+          font-weight 400
+      .fa
         margin-right 5px
+    .reset
+      border-top $GRAY_BORDER
+      display block
+      line-height 3 
+      color #fff
+      text-align center
 
 modulesWrapperCss()
   .modules-wrapper

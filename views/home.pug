@@ -53,7 +53,7 @@ mixin HeaderView()
       a.clear(href='javascript:;')
         +FontIcon('fa-times')
 
-      input(type='text')
+      input(type='text', placeholder='Search modules you want')
     .functions
       a(href='javascript:;').filter
         +FontIcon('fa-filter')
@@ -62,13 +62,25 @@ mixin HeaderView()
 
 mixin FilterView()
   .filter-wrapper.hidden
+    mixin FilterItems(data)
+      each desc, key in data 
+        li: a(data-key=key, href='javascript:;') #{desc}
     ul(data-type='sort')
       li.name
         +FontIcon('fa-sort')
-        | Sort by
-      each desc, key in viewData.sorts
-        li: a(data-key=key, href='javascript:;') #{desc}
-
+        | SortBy
+      +FilterItems(viewData.sorts)
+    ul(data-type='updated')
+      li.name
+        +FontIcon('fa-magic')
+        | UpdatedAt
+      +FilterItems(viewData.updatedAt)
+    ul(data-type='created')
+      li.name
+        +FontIcon('fa-plus-square')
+        | CreatedAt
+      +FilterItems(viewData.createdAt)
+    a.reset(href='javascript:;') Reset
 block bodyContainer
   .home-view
     +HeaderView()

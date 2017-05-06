@@ -5,6 +5,7 @@ const moment = require('moment');
 const Models = localRequire('models');
 const errors = localRequire('helpers/errors');
 
+npmApis.timeout = 5 * 1000;
 
 /**
  * Update the counts of module
@@ -75,9 +76,13 @@ exports.update = async (name) => {
   delete basic.latest;
   basic.versions = _.sortBy(versions, item => item.time);
   basic.latest = latestVersion;
-  const scores = await npmApis.getScore(name);
-  // scores 有可能为空
-  basic.scores = scores;
+  try {
+    const scores = await npmApis.getScore(name);
+    // scores 有可能为空
+    basic.scores = scores;
+  } catch (err) {
+    console.error(`Can't get the score of ${name}`);
+  }
   const NPM = Models.get('Npm');
   const doc = await NPM.findOne({
     name,
@@ -338,7 +343,6 @@ exports.getDownloads = async (name, begin, end) => {
   _.forEach(docs, (doc) => {
     downloads[doc.date] = doc.downloads;
   });
-  console.dir(docs);
   const result = [];
   for (let i = 0; i < dayCount; i += 1) {
     const date = beginDate.format('YYYY-MM-DD');

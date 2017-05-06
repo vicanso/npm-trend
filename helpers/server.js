@@ -17,7 +17,7 @@ module.exports = (port) => {
   app.use(localRequire('middlewares/entry')(config.app, config.appUrlPrefix));
   // timeout
   app.use(localRequire('middlewares/timeout')({
-    timeout: 3000,
+    timeout: 10 * 1000,
     // 如果query中设置了disableTimeout，则跳过timeout处理
     pass: ctx => _.has(ctx.query, 'disableTimeout'),
   }));

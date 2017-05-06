@@ -40,9 +40,9 @@ module.exports = async (ctx) => {
     limit: Joi.number().integer().min(1).max(100)
       .default(20),
     created: Joi.string()
-      .valid('-7d', '-30d', '-91d'),
+      .valid('-1d', '-7d', '-30d', '-90d'),
     updated: Joi.string()
-      .valid('-7d', '-30d', '-91d'),
+      .valid('-1d', '-7d', '-30d', '-90d'),
   });
   const sort = {};
   sort[options.sort] = options.sortBy === 'desc' ? -1 : 1;
@@ -119,6 +119,18 @@ module.exports = async (ctx) => {
     title: 'The modules you want',
     viewData: {
       sorts,
+      updatedAt: {
+        '-1d': 'Last 1 day',
+        '-7d': 'Last 7 days',
+        '-30d': 'Last 30 days',
+        '-90d': 'Last 90 days',
+      },
+      createdAt: {
+        '-1d': 'Last 1 day',
+        '-7d': 'Last 7 days',
+        '-30d': 'Last 30 days',
+        '-90d': 'Last 90 days',
+      },
       modules,
       query: ctx.query,
     },

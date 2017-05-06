@@ -69,6 +69,9 @@ module.exports = {
       keywords: 1,
     },
     {
+      'author.name': 1,
+    },
+    {
       'latest.time': 1,
     },
     {
