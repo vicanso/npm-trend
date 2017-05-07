@@ -73,3 +73,31 @@
     text-indent 10px
   .content
     padding 20px
+
+.trends-chart
+  position relative
+  height 300px
+  .loading
+    position absolute
+    top 50%
+    width 100%
+    margin-top -30px
+    text-align center
+  .days-selector
+    position absolute
+    right 0 
+    top 0 
+    border 1px solid $COLOR_LIGHT_BLACK
+    border-radius 3px
+    background-color #fff
+    a
+      display inline-block
+      width 24px
+      text-align center
+      border-right 1px solid $COLOR_LIGHT_BLACK
+      &.selected
+        background-color $COLOR_RED
+        font-weight $FONT_BOLD
+        color #fff
+      &:last-child
+        border-right none

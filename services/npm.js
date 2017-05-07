@@ -76,6 +76,9 @@ exports.update = async (name) => {
   delete basic.latest;
   basic.versions = _.sortBy(versions, item => item.time);
   basic.latest = latestVersion;
+  if (_.isObject(basic.license)) {
+    basic.license = basic.license.type;
+  }
   try {
     const scores = await npmApis.getScore(name);
     // scores 有可能为空
@@ -326,13 +329,6 @@ exports.getDownloads = async (name, begin, end) => {
   const oneDay = 24 * 3600 * 1000;
   const ms = moment(end, 'YYYY-MM-DD').valueOf() - beginDate.valueOf();
   const dayCount = _.ceil(ms / oneDay) + 1;
-  console.dir({
-    name,
-    date: {
-      $lte: end,
-      $gte: beginDate,
-    },
-  });
   const docs = await Count.find({
     name,
     date: {

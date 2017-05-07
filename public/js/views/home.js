@@ -218,10 +218,8 @@ function initDownloadTrendHandle() {
     }
     target.addClass('selected');
     const name = target.siblings('.module').text();
-    const chartWrapper = $(`
-      <div class="chart-wrapper">
-      <div>
-    `).appendTo(moduleItem);
+    const chartWrapper = $('<div class="chart-wrapper" />')
+      .appendTo(moduleItem);
     const trends = new Trends(chartWrapper, [
       name,
     ]);
