@@ -54,7 +54,7 @@ gulp.task('del:assets', () => del([assetsPath]));
 
 gulp.task('del:build', () => del(['build', 'public/bundle']));
 
-gulp.task('clean', ['crc32'], () => del(['build']));
+gulp.task('clean', ['crc32'], () => del(['build', 'node_modules']));
 
 
 gulp.task('stylus', ['del:assets', 'del:build'], () => gulp.src('public/**/*.styl')
