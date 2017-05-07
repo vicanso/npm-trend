@@ -69,3 +69,6 @@ if (process.env.ENABLE_JOB) {
 if (process.env.UPDATE_ALL) {
   updateAllModules();
 }
+if (process.env.UPDATE_DOWNLOADS) {
+  updateModulesDownloads();
+}
