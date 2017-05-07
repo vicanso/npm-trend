@@ -29,8 +29,10 @@ mixin Modules(items)
           span (#{item.latest.version})
           span.tips(data-content=item.about)
             +FontIcon('fa-question-circle-o')
-          a(href='javascript:;', title='download trend').download-trend
+          a(href='javascript:;', title='show download trend').download-trend.mleft10
             +FontIcon('fa-area-chart')
+          a(href='javascript:;', title='add to compare').compare.mleft10
+            +FontIcon('fa-link font14')
         p #{item.description}
         if item.keywords && item.keywords.length
           +Keywords(item.keywords)

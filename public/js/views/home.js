@@ -245,6 +245,60 @@ function appendCountTips() {
   });
 }
 
+function initCompareHandle() {
+  const renderCompareList = () => {
+    const modules = npmService.getCompareList();
+    let compareWrapper = viewWrapper.find('.compare-wrapper');
+    if (!modules || !modules.length) {
+      compareWrapper.remove();
+      return;
+    }
+    if (!compareWrapper.length) {
+      compareWrapper = $(`<div class="compare-wrapper">
+        <h4>Compare modules</h4>
+        <ul></ul>
+        <div class="functions">
+          <a href="javascript:;">Start</a>
+          <a href="javascript:;" class="clear">Clear</a>
+        </div>
+      `).appendTo(viewWrapper);
+    }
+    const list = _.map(modules, module => `<li>
+      ${module}
+      <a href="javascript:;" title="remove from compare">
+        <i class="fa fa-chain-broken" aria-hidden="true"></i>
+      </a>
+    `);
+    compareWrapper.find('ul').html(list.join(''));
+  };
+
+  viewWrapper.on('click', '.modules-wrapper a.compare', (e) => {
+    const name = $(e.currentTarget).siblings('.module').text();
+    npmService.addToCompare(name);
+    renderCompareList();
+  });
+  viewWrapper.on('click', '.compare-wrapper li a', (e) => {
+    const name = $(e.currentTarget).closest('li').text().trim();
+    npmService.removeFromCompare(name);
+    renderCompareList();
+  });
+  viewWrapper.on('click', '.compare-wrapper .functions a', (e) => {
+    const target = $(e.currentTarget);
+    const compareWrapper = viewWrapper.find('.compare-wrapper');
+    if (target.hasClass('clear')) {
+      npmService.clearCompare();
+      compareWrapper.remove();
+      return;
+    }
+    compareWrapper.find('.compare-chart-wrapper').remove();
+    const chartWrapper = $('<div class="compare-chart-wrapper" />')
+      .appendTo(compareWrapper);
+    const trends = new Trends(chartWrapper, npmService.getCompareList());
+    trends.render();
+  });
+  renderCompareList();
+}
+
 locationService.on('change', (data) => {
   if (data.path !== VIEW_HOME) {
     return;
@@ -258,6 +312,7 @@ locationService.on('change', (data) => {
     initAnchorClickHandle();
     initSearchHandle();
     initDownloadTrendHandle();
+    initCompareHandle();
   } else {
     const selector = '.modules-wrapper';
     const item = $(selector, viewWrapper);

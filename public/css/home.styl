@@ -143,7 +143,6 @@ modulesWrapperCss()
           font-weight $FONT_BOLD
           cursor pointer
         .download-trend
-          margin-left 10px
           font-size 14px
           &.selected
             color $COLOR_RED
@@ -192,6 +191,37 @@ modulesWrapperCss()
     .updatedAt
       color $COLOR_DARK_BLUE
 
+compareWrapperCss()
+  .compare-wrapper
+    background-color #fff
+    position fixed
+    left 0
+    bottom 0
+    right 0
+    h4
+      background-color $COLOR_DARK_BLUE
+      color #fff
+      margin 0
+      padding 10px
+    ul
+      margin 0
+      padding 10px 
+      list-style none
+      li
+        display inline-block
+        margin-right 15px
+    .functions
+      display flex
+      border-top $GRAY_BORDER
+      border-bottom $GRAY_BORDER
+      a
+        flex 1
+        text-align center
+        padding 5px 0
+        border-right $GRAY_BORDER
+        &:last-child
+          border-right none
+
 .home-view
   headerWrapperCss()
   filterWrapperCss()
@@ -204,3 +234,4 @@ modulesWrapperCss()
       color $COLOR_RED
       margin 0 3px
   modulesWrapperCss()
+  compareWrapperCss()
