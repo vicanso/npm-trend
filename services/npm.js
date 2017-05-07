@@ -129,11 +129,13 @@ exports.updateDownloads = async (name) => {
   }).sort({
     date: -1,
   }).exec();
-  const start = _.get(downloadInfo, 'date', doc.createdTime.substring(0, 10));
-  const end = moment().add(-1, 'day').format('YYYY-MM-DD');
+  const formatStr = 'YYYY-MM-DD';
+  let start = _.get(downloadInfo, 'date', doc.createdTime.substring(0, 10));
+  const end = moment().add(-1, 'day').format(formatStr);
   if (start >= end) {
     return;
   }
+  start = moment(start, formatStr).add(-1, 'day').format(formatStr);
   const downloadsList = await npmApis.getDownloads(name, start, end);
   await Promise.each(downloadsList, async (item) => {
     const downloads = item.downloads;
@@ -212,18 +214,19 @@ exports.updateModules = async (names, forceUpdate = false) => {
 exports.updateModulesDownloads = async () => {
   const NPM = Models.get('Npm');
   const count = await NPM.count({});
-  const offset = 10;
+  const offset = 50;
   const arr = _.range(0, _.ceil(count / offset));
   const update = async (start) => {
     const docs = await NPM.find({}, 'name')
       .skip(start)
       .limit(offset);
     const doDownloadUpdate = name => exports.updateDownloads(name)
-      .then(() => console.info(`update ${name} downloads success`))
       .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
-    return Promise.map(docs, item => doDownloadUpdate(item.name), {
+    await Promise.map(docs, item => doDownloadUpdate(item.name), {
       concurrency: 30,
     });
+    const percent = _.ceil(100 * ((start + offset) / count));
+    console.info(`update downlaods finish ${percent}%`);
   };
   await Promise.each(arr, update);
 };
