@@ -20,7 +20,6 @@ module.exports = {
     maintainers: [Object],
     author: {
       type: Object,
-      required: true,
     },
     keywords: [String],
     license: String,

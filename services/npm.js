@@ -55,7 +55,7 @@ async function updatePeriodCounts(name) {
  */
 exports.update = async (name) => {
   const basic = await npmApis.get(name);
-  if (!basic || !basic.author) {
+  if (!basic) {
     throw errors.get(301);
   }
   let latestVersion;
@@ -168,7 +168,7 @@ exports.updateModules = async (names, forceUpdate = false) => {
   const Ignore = Models.get('Ignore');
   const ignoreDocs = await Ignore.find({}, 'name');
   const ignoreItems = _.map(ignoreDocs, item => item.name).sort();
-  const doUpdate = async (name) => {
+  const doUpdate = async (name, index, length) => {
     if (!forceUpdate) {
       if (_.sortedIndexOf(ignoreItems, name) !== -1) {
         return Promise.resolve();
@@ -191,6 +191,9 @@ exports.updateModules = async (names, forceUpdate = false) => {
           return Promise.resolve();
         }
       }
+    }
+    if (index % 10 === 0) {
+      console.info(`update modules progress ${index}/${length}`);
     }
     return exports.update(name)
         .catch((err) => {
@@ -225,8 +228,7 @@ exports.updateModulesDownloads = async () => {
     await Promise.map(docs, item => doDownloadUpdate(item.name), {
       concurrency: 30,
     });
-    const percent = _.ceil(100 * ((start + offset) / count));
-    console.info(`update downlaods finish ${percent}%`);
+    console.info(`update downlaods progress ${start + offset}/${count}`);
   };
   await Promise.each(arr, update);
 };
