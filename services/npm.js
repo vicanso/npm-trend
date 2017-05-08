@@ -217,7 +217,7 @@ exports.updateModules = async (names, forceUpdate = false) => {
 exports.updateModulesDownloads = async () => {
   const NPM = Models.get('Npm');
   const count = await NPM.count({});
-  const offset = 50;
+  const offset = 500;
   const arr = _.range(0, _.ceil(count / offset));
   const update = async (start) => {
     const docs = await NPM.find({}, 'name')
@@ -226,7 +226,7 @@ exports.updateModulesDownloads = async () => {
     const doDownloadUpdate = name => exports.updateDownloads(name)
       .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
     await Promise.map(docs, item => doDownloadUpdate(item.name), {
-      concurrency: 30,
+      concurrency: 100,
     });
     console.info(`update downlaods progress ${start + offset}/${count}`);
   };
