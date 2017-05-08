@@ -136,6 +136,11 @@ exports.updateDownloads = async (name) => {
     return;
   }
   start = moment(start, formatStr).add(-1, 'day').format(formatStr);
+  // update download in one year
+  const oneYearAgo = moment().add(-1, 'year').format(formatStr);
+  if (start < oneYearAgo) {
+    start = oneYearAgo;
+  }
   const downloadsList = await npmApis.getDownloads(name, start, end);
   await Promise.each(downloadsList, async (item) => {
     const downloads = item.downloads;
@@ -221,14 +226,14 @@ exports.updateModulesDownloads = async () => {
   const arr = _.range(0, _.ceil(count / offset));
   const update = async (start) => {
     const docs = await NPM.find({}, 'name')
-      .skip(start)
+      .skip(start * offset)
       .limit(offset);
     const doDownloadUpdate = name => exports.updateDownloads(name)
       .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
     await Promise.map(docs, item => doDownloadUpdate(item.name), {
       concurrency: 100,
     });
-    console.info(`update downlaods progress ${start + offset}/${count}`);
+    console.info(`update downlaods progress ${(start + 1) * offset}/${count}`);
   };
   await Promise.each(arr, update);
 };

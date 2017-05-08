@@ -54,6 +54,7 @@ const normal = (ctx, next) => {
   ) {
     throw errors.get(4);
   }
+  delete ctx.query['cache-control'];
   const startedAt = Date.now();
   const timing = ctx.state.timing;
   const end = timing.start('session');

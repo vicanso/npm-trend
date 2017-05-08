@@ -17,12 +17,51 @@ import * as globals from '../helpers/globals';
 import * as viewService from '../services/view';
 import * as locationService from '../services/location';
 import * as npmService from '../services/npm';
+import * as userService from '../services/user';
 import {
   VIEW_HOME,
 } from '../constants/urls';
 
 let viewWrapper;
+const starList = [];
 
+function initUserHandle() {
+  viewWrapper.on('click', '.header-wrapper .functions .logout', () => {
+    userService.logout();
+  });
+  const staring = {};
+  viewWrapper.on('click', '.modules-wrapper a.star', (e) => {
+    const target = $(e.currentTarget);
+    const name = target.siblings('.module').text();
+    if (staring[name]) {
+      return;
+    }
+    let fn = 'addStar';
+    if (target.hasClass('selected')) {
+      fn = 'removeStar';
+    }
+    staring[name] = true;
+    userService[fn](name)
+      .then(() => {
+        delete staring[name];
+        target.toggleClass('selected');
+      })
+      .catch((err) => {
+        delete staring[name];
+        alert(getErrorMessage(err));
+      });
+  });
+}
+
+function addStarStatus(target) {
+  const list = $('li a.module', target);
+  _.forEach(list, (item) => {
+    const obj = $(item);
+    if (_.indexOf(starList, obj.text()) !== -1) {
+      obj.siblings('.star').addClass('selected');
+    }
+  });
+}
 
 // set the click event for about tips
 function initAboutTipHandle() {
@@ -149,7 +188,9 @@ function getMore() {
       getMoreOptions.isGettingMore = false;
       getMoreOptions.offset += pageSize;
       loading.remove();
-      item.append(viewData.content);
+      const list = $(viewData.content);
+      item.append(list);
+      addStarStatus(list);
       if (getMoreOptions.offset + pageSize > max) {
         item.append(`
           <div style="margin:20px;text-align:center">
@@ -255,7 +296,12 @@ function initCompareHandle() {
     }
     if (!compareWrapper.length) {
       compareWrapper = $(`<div class="compare-wrapper">
-        <h4>Compare modules</h4>
+        <h4>
+          <a class="pull-right close" href="javascript:;">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </a>
+          Compare modules
+        </h4>
         <ul></ul>
         <div class="functions">
           <a href="javascript:;">Start</a>
@@ -273,7 +319,9 @@ function initCompareHandle() {
   };
 
   viewWrapper.on('click', '.modules-wrapper a.compare', (e) => {
-    const name = $(e.currentTarget).siblings('.module').text();
+    const target = $(e.currentTarget);
+    target.addClass('selected');
+    const name = target.siblings('.module').text();
     npmService.addToCompare(name);
     renderCompareList();
   });
@@ -296,6 +344,9 @@ function initCompareHandle() {
     const trends = new Trends(chartWrapper, npmService.getCompareList());
     trends.render();
   });
+  viewWrapper.on('click', '.compare-wrapper .close', () => {
+    viewWrapper.find('.compare-wrapper').remove();
+  });
   renderCompareList();
 }
 
@@ -313,11 +364,15 @@ locationService.on('change', (data) => {
     initSearchHandle();
     initDownloadTrendHandle();
     initCompareHandle();
+    initUserHandle();
   } else {
     const selector = '.modules-wrapper';
     const item = $(selector, viewWrapper);
     getView(data.url, selector)
-      .then(viewData => item.html(viewData.content))
+      .then((viewData) => {
+        item.html(viewData.content);
+        addStarStatus(viewWrapper.find('.modules-wrapper ul'));
+      })
       .catch(err => alert(err.message));
   }
   appendCountTips();
@@ -325,5 +380,22 @@ locationService.on('change', (data) => {
   const q = getQueryParam('q');
   if (q) {
     $('.search-component input', viewWrapper).val(q);
+  }
+});
+
+userService.on('session', (userInfo) => {
+  const loginBtn = $('.header-wrapper .functions .login', viewWrapper);
+  const userAvatar = $('.header-wrapper .functions .user', viewWrapper);
+  if (!userInfo || !userInfo.account) {
+    loginBtn.removeClass('hidden');
+    userAvatar.addClass('hidden');
+    starList.length = 0;
+  } else {
+    loginBtn.addClass('hidden');
+    userAvatar.removeClass('hidden').html(`<img src="${userInfo.avatar}" />`);
+    userService.getStars().then((modules) => {
+      starList.push(...modules);
+      addStarStatus(viewWrapper.find('.modules-wrapper ul'));
+    });
   }
 });

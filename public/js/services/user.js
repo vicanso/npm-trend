@@ -1,57 +1,64 @@
 import store from 'store';
+import _ from 'lodash';
+import EventEmitter from 'events';
 
 import * as http from '../helpers/http';
-import * as crypto from '../helpers/crypto';
 import * as globals from '../helpers/globals';
 import {
   USER_ME,
-  USER_LOGIN,
-  USER_REGISTER,
   USER_LOGOUT,
   USER_BEHAVIOR,
+  USER_STAR,
 } from '../constants/urls';
 import * as locationService from './location';
 
-
 const userBehavior = store.get('userBehavior') || [];
+const emiter = new EventEmitter();
 
-/* eslint no-undef:0 */
-const app = (window.CONFIG && window.CONFIG.app) || 'unknown';
+export function on(...args) {
+  emiter.on(...args);
+}
+
+export function off(...args) {
+  emiter.off(...args);
+}
 
 export function me() {
   return http.get(USER_ME)
     .noCache()
-    .then(res => res.body);
-}
-
-export function add(account, password, email) {
-  const pwd = crypto.sha256(password);
-  const code = crypto.sha256(`${account}-${pwd}-${app}`);
-  return http.post(USER_REGISTER, {
-    account,
-    password: code,
-    email,
-  }).noCache().then(res => res.body);
-}
-
-export function login(account, password) {
-  return http.get(USER_LOGIN)
-    .noCache()
     .then((res) => {
-      const token = res.body.token;
-      const pwd = crypto.sha256(password);
-      const code = crypto.sha256(crypto.sha256(`${account}-${pwd}-${app}`) + token);
-      return http.post(USER_LOGIN, {
-        account,
-        password: code,
-      }).noCache();
-    }).then(res => res.body);
+      const userInfo = res.body;
+      emiter.emit('session', userInfo);
+      return userInfo;
+    });
 }
 
 export function logout() {
   return http.del(USER_LOGOUT)
     .noCache()
-    .then(res => res.body || { account: '' });
+    .then((res) => {
+      const userInfo = res.body || { account: '' };
+      emiter.emit('session', userInfo);
+      return userInfo;
+    });
+}
+
+export function addStar(module) {
+  return http.post(`${USER_STAR}/${module}`, {
+    module,
+  });
+}
+
+export function removeStar(module) {
+  return http.del(`${USER_STAR}/${module}`, {
+    module,
+  });
+}
+
+export function getStars() {
+  return http.get(USER_STAR)
+    .noCache()
+    .then(res => res.body);
 }
 
 export function addBehavior(type, data) {

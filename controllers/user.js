@@ -4,6 +4,7 @@
  */
 const Joi = require('joi');
 const _ = require('lodash');
+const request = require('superagent');
 
 const errors = localRequire('helpers/errors');
 const userService = localRequire('services/user');
@@ -16,16 +17,10 @@ const influx = localRequire('helpers/influx');
 /**
  * 从用户信息中选择字段返回给前端使用，避免直接返回时把不应该展示的字段也返回了
  * @param  {Object} userInfos 用户数据
- * @return {Object} 筛选的数据 {
- * account: String,
- * lastLoginedAt: ISOString,
- * loginCount: Integer,
- * token: String,
- * date: ISOString,
- * }
+ * @return {Object} 筛选的数据
  */
 const pickUserInfo = (userInfos) => {
-  const keys = 'account lastLoginedAt loginCount token'.split(' ');
+  const keys = 'name avatar account type'.split(' ');
   return _.extend({
     date: new Date().toISOString(),
   }, _.pick(userInfos, keys));
@@ -57,68 +52,6 @@ exports.logout = (ctx) => {
   ctx.body = null;
 };
 
-/**
- * 如果是GET，则返回一个随机的token，记录入到session中，用于用户密码hash使用
- * @param {Method} GET
- * @prop {Middlware} session
- * @prop {Route} /api/users/login
- * @return {Object} {token: String}
- */
-exports.loginToken = (ctx) => {
-  const session = ctx.session;
-  if (_.get(session, 'user.account')) {
-    throw errors.get(101);
-  }
-  const user = {
-    token: randomToken(),
-  };
-  session.user = user;
-  ctx.set('Cache-Control', 'no-store');
-  /* eslint no-param-reassign:0 */
-  ctx.body = user;
-};
-
-/**
- * 如果是POST，则是用户登录，并将用户信息记录到session中
- * @param {Method} POST
- * @param {String} request.body.account 用户账号
- * @param {String} request.body.password 用户密码
- * @prop {Middlware} session
- * @prop {Route} /api/users/login
- * @return {Object} 返回`pickUserInfo`的数据
- */
-exports.login = async (ctx) => {
-  const session = ctx.session;
-  if (_.get(session, 'user.account')) {
-    throw errors.get(101);
-  }
-  const token = _.get(session, 'user.token');
-  if (!token) {
-    throw errors.get(102);
-  }
-  const { account, password } = ctx.request.body;
-  const doc = await userService.get(account, password, token);
-  const user = pickUserInfo(doc);
-  const ip = ctx.ip;
-  user.token = randomToken();
-  user.loginCount += 1;
-  /* eslint no-param-reassign:0 */
-  ctx.session.user = user;
-  /* eslint no-param-reassign:0 */
-  ctx.body = user;
-  /* eslint no-underscore-dangle:0 */
-  userService.update(doc._id, {
-    lastLoginedAt: (new Date()).toISOString(),
-    loginCount: user.loginCount,
-    ip,
-  });
-  userService.addLoginRecord({
-    account: user.account,
-    token: user.token,
-    userAgent: ctx.get('User-Agent'),
-    ip,
-  });
-};
 
 /**
  * 刷新用户session的ttl
@@ -141,58 +74,89 @@ exports.refreshSession = async (ctx) => {
   ctx.body = null;
 };
 
-/**
- * 用户注册
- * @param {Method} POST
- * @param {String} request.body.account 用户账号，Joi.string().min(4).required()
- * @param {String} request.body.password 用户密码，Joi.string().required()
- * @param {String} request.body.email 用户邮箱，Joi.string().email().required()
- * @prop {Middleware} session
- * @prop {Route} /api/users/register
- * @return {Object} 从用户信息中返回pickUserInfo函数获取的值
- */
-exports.register = async (ctx) => {
-  const data = Joi.validateThrow(ctx.request.body, {
-    account: Joi.string().min(4).required(),
-    password: Joi.string().required(),
-    email: Joi.string().email().required(),
-  });
-  if (_.get(ctx, 'session.user.account')) {
-    throw errors.get(103);
-  }
-  const ip = ctx.ip;
-  data.ip = ip;
-  const doc = await userService.add(data);
-  doc.token = randomToken();
-  const user = pickUserInfo(doc);
-  /* eslint no-param-reassign:0 */
-  ctx.session.user = user;
-  /* eslint no-param-reassign:0 */
-  ctx.body = user;
-  userService.addLoginRecord({
-    account: user.account,
-    token: user.token,
-    userAgent: ctx.get('User-Agent'),
-    ip,
-  });
-};
 
 /**
  * 用户行为记录
  * @param {Method} POST
- * @param {String} request.body.code 用户Like的编码
- * @prop {Middleware} level(5)
- * @prop {Middleware} version([2, 3])
- * @prop {Middleware} session.read
- * @return {Object} 返回用户Like的信息
+ * @prop {Middleware} session
+ * @return
  */
 exports.behavior = (ctx) => {
+  const account = _.get(ctx, 'session.user.account');
   _.forEach(ctx.request.body, (item) => {
     const type = item.type;
     delete item.type;
+    if (account) {
+      item.account = account;
+    }
     influx.write('behavior', item, {
       type,
     });
   });
   ctx.status = 201;
+};
+
+exports.loginCallback = async (ctx) => {
+  const params = Joi.validateThrow(ctx.query, {
+    code: Joi.string().max(24),
+    type: Joi.string().valid(['github']),
+    'redirect-uri': Joi.string().default('/'),
+  });
+  let res = await request.post('https://github.com/login/oauth/access_token')
+    .set('Accept', 'application/json')
+    .send({
+      client_id: '04e3e64ca25edf31751e',
+      client_secret: 'c37548b36fc69739f3dd5a9dffea89ee7cbfc895',
+      code: params.code,
+    });
+  const accessToken = res.body.access_token;
+  if (!accessToken) {
+    throw errors.get(108);
+  }
+
+  res = await request.get(`https://api.github.com/user?access_token=${accessToken}`);
+  const userInfos = res.body;
+  const user = {
+    token: randomToken(),
+    accessToken,
+    name: userInfos.name,
+    avatar: userInfos.avatar_url,
+    account: userInfos.login,
+    type: params.type,
+  };
+  ctx.session.user = user;
+  userService.addLoginRecord({
+    account: user.account,
+    type: user.type,
+    token: user.token,
+    userAgent: ctx.get('User-Agent'),
+    ip: ctx.ip,
+  });
+
+  ctx.redirect(params['redirect-uri']);
+};
+
+exports.star = async (ctx) => {
+  const user = ctx.session.user;
+  const data = Joi.validateThrow(ctx.params, {
+    module: Joi.string().max(50),
+  });
+  const options = {
+    account: user.account,
+    type: user.type,
+    module: data.module,
+  };
+  if (ctx.method === 'POST') {
+    await userService.addStar(options);
+    ctx.status = 201;
+  } else {
+    await userService.removeStar(options);
+    ctx.status = 204;
+  }
+};
+
+exports.getStars = async (ctx) => {
+  const user = ctx.session.user;
+  ctx.body = await userService.getStars(user
+  .account, user.type);
 };

@@ -94,3 +94,35 @@ exports.addLoginRecord = async (data) => {
   }
   return null;
 };
+
+
+exports.addStar = async (data) => {
+  const Star = Models.get('Star');
+  const doc = await Star.findOne(data);
+  if (!doc) {
+    await new Star(data).save();
+  } else if (!doc.enabled) {
+    doc.set('enabled', true);
+    await doc.save();
+  }
+};
+
+exports.removeStar = async (data) => {
+  const Star = Models.get('Star');
+  const doc = await Star.findOne(data);
+  if (!doc) {
+    return;
+  }
+  doc.set('enabled', false);
+  await doc.save();
+};
+
+exports.getStars = async (account, type) => {
+  const Star = Models.get('Star');
+  const docs = await Star.find({
+    account,
+    type,
+    enabled: true,
+  }, 'module');
+  return _.map(docs, doc => doc.module);
+};

@@ -23,7 +23,6 @@ headerWrapperCss()
         text-indent -99em
     .search-component
       $searchBoxHeight = 40px
-      max-width 400px
       height $searchBoxHeight
       background #fff
       border-radius 3px
@@ -57,14 +56,22 @@ headerWrapperCss()
         width 100%
         color $COLOR_DARK
     .functions
-      width 90px
+      width 130px
       padding-left 20px
       a
         font-size 24px
         color #fff
         margin-right 15px
+        display block
+        float left
         &.selected
           color $COLOR_LIGHT_GREEN
+        &.user
+          img
+            display block
+            width 22px
+            margin-top 5px
+            border-radius 40px
 
 
 .module-about-tip
@@ -121,6 +128,7 @@ filterWrapperCss()
 modulesWrapperCss()
   .modules-wrapper
     margin 0 20px
+    max-width 700px
     ul
       margin 0
       padding 0
@@ -144,8 +152,8 @@ modulesWrapperCss()
           cursor pointer
         .download-trend
           font-size 14px
-          &.selected
-            color $COLOR_RED
+        a.selected
+          color $COLOR_RED
       p
         margin 8px 0
       .keywords
@@ -198,11 +206,16 @@ compareWrapperCss()
     left 0
     bottom 0
     right 0
+    @media only screen and (min-width : 1000px)
+      left auto
+      width 300px
     h4
       background-color $COLOR_DARK_BLUE
       color #fff
       margin 0
       padding 10px
+      .close
+        color #fff
     ul
       margin 0
       padding 10px 

@@ -2,8 +2,8 @@ module.exports = [
   '[GET] [/api/users/me] [m.noCache & m.session & c.user.me]',
   '[PUT] [/api/users/me] [m.session & c.user.refreshSession]',
   '[POST] [/api/users/behavior] [m.session & c.user.behavior]',
-  '[GET] [/api/users/login] [m.session & c.user.loginToken]',
-  '[POST] [/api/users/login] [m.session & c.user.login]',
   '[DELETE] [/api/users/logout] [m.session.login & c.user.logout]',
-  '[POST] [/api/users/register] [m.session & c.user.register]',
+  '[GET] [/api/users/login/callback] [m.session & c.user.loginCallback]',
+  '[POST,DELETE] [/api/user/stars/:module] [m.session.login & c.user.star]',
+  '[GET] [/api/user/stars] [m.session.login & c.user.getStars]',
 ];

@@ -27,4 +27,12 @@ module.exports = {
     en: 'Should login first',
     status: 401,
   },
+  108: {
+    en: 'The code is expired',
+    status: 500,
+  },
+  109: {
+    en: 'Get user info fail',
+    status: 500,
+  },
 };

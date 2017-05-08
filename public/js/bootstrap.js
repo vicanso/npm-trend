@@ -45,15 +45,15 @@ function statistics() {
     timing.end('page');
     data.timing = timing.toJSON();
   }
-
-  const performance = globals.get('performance');
-  if (performance) {
-    data.performance = performance.timing;
-    if (performance.getEntries) {
-      const entries = performance.getEntries();
-      data.entries = _.filter(entries, tmp => tmp.initiatorType !== 'xmlhttprequest');
-    }
-  }
+  // TODO imporove performance stats
+  // const performance = globals.get('performance');
+  // if (performance) {
+  //   data.performance = performance.timing;
+  //   if (performance.getEntries) {
+  //     const entries = performance.getEntries();
+  //     data.entries = _.filter(entries, tmp => tmp.initiatorType !== 'xmlhttprequest');
+  //   }
+  // }
   statsService.statistics(data)
     .then(() => console.info('post statistics success'))
     .catch(err => console.error('post statistics fail, %s', err));
@@ -95,4 +95,5 @@ _.defer(() => {
   http.timeout(10 * 1000);
   initScroll();
   userService.visit();
+  userService.me();
 });

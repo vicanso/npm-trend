@@ -126,6 +126,7 @@ const schemas = {
   behavior: {
     fields: {
       url: 'string',
+      account: 'string',
     },
     tags: {
       type: [

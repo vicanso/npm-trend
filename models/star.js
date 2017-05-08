@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const {
   String,
+  Boolean,
 } = mongoose.Schema.Types;
 
 module.exports = {
@@ -10,37 +11,27 @@ module.exports = {
       type: String,
       required: true,
     },
-    token: {
+    type: {
       type: String,
       required: true,
     },
-    userAgent: {
+    module: {
       type: String,
       required: true,
     },
     createdAt: {
       type: String,
-      required: true,
+      default: () => new Date().toISOString(),
     },
-    type: {
-      type: String,
-      required: true,
-    },
-    ip: {
-      type: String,
-      required: true,
+    enabled: {
+      type: Boolean,
+      default: true,
     },
   },
   indexes: [
     {
       account: 1,
-    },
-    {
-      createdAt: 1,
-    },
-    {
-      account: 1,
-      createdAt: 1,
+      type: 1,
     },
   ],
 };
