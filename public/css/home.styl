@@ -5,14 +5,15 @@ headerWrapperCss()
   .header-wrapper
     background-color $COLOR_DARK_BLUE 
     box-sizing content-box
-    width 100%
-    display table
     color #fff
-    table-layout fixed
-    height 80px 
-    > *
-      display table-cell
-      vertical-align middle
+    .header-content
+      table-layout fixed
+      height 80px
+      display table
+      width 100%
+      > *
+        display table-cell
+        vertical-align middle
     .logo
       font-family Oleo Script,cursive
       font-size 32px
@@ -72,6 +73,25 @@ headerWrapperCss()
             width 22px
             margin-top 5px
             border-radius 40px
+    .user-functions
+      top 60px
+      display block
+      width 150px
+      right 0
+      padding 0
+      ul
+        margin 0
+        padding 5px 
+        list-style none
+        a
+          display block 
+          padding 7px
+          text-decoration none
+          &:hover
+            color #fff
+            background-color $COLOR_BLUE
+      .arrow-up, .arrow-up-shadow
+        right 20px
 
 
 .module-about-tip
@@ -235,6 +255,38 @@ compareWrapperCss()
         &:last-child
           border-right none
 
+starsWrapperCss()
+  .stars-wrapper
+    position fixed
+    left 0
+    top 0
+    bottom 0
+    right 0
+    background-color rgba(0, 0, 0, 0.3)
+    .content-wrapper
+      position absolute
+      top 50% 
+      left 0
+      right 0
+      background-color #fff
+      margin-top -45px
+      h4
+        margin 0
+        background-color $COLOR_DARK_BLUE
+        color #fff
+        line-height 2.5 
+        padding-left 10px
+        .close
+          display block
+          height 100%
+          width 30px
+          color #fff
+      table
+        width 100%
+        th, td
+          padding 5px
+          text-align center
+
 .home-view
   headerWrapperCss()
   filterWrapperCss()
@@ -248,3 +300,4 @@ compareWrapperCss()
       margin 0 3px
   modulesWrapperCss()
   compareWrapperCss()
+  starsWrapperCss()

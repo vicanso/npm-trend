@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import moment from 'moment';
 
 import ToolTip from '../components/tooltip';
 import ProgressBar from '../components/progress-bar';
@@ -25,10 +26,74 @@ import {
 let viewWrapper;
 const starList = [];
 
+function showMyStars() {
+  const html = `<div class="stars-wrapper">
+    <div class="content-wrapper">
+      <h4>
+        <a href="javascript:;" class="close pull-right tac">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </a>
+        My Stars
+      </h4>
+      <div class="content">
+        <p class="tac">Loading</p>
+      </div>
+    </div>
+  </div>`;
+  const starsWrapper = $(html).appendTo(viewWrapper);
+  starsWrapper.find('a.close').click(() => {
+    starsWrapper.remove();
+  });
+  userService.getStars().then((data) => {
+    const arr = _.map(data, (item) => {
+      const downloads = _.get(item, 'downloads.latest', 0);
+      const tr = `<tr>
+        <td>${item.name}</td>
+        <td>${item.latest.version}</td>
+        <td>${downloads.toLocaleString()}</td>
+        <td>${moment(item.latest.time).format('YYYY-MM-DD HH:mm')}</td>
+        <td title="Updated after star">
+          <i class="fa fa-refresh" aria-hidden="true"></i>
+          ${item.latest.time > item.starVersion.time}
+        </td>
+      </tr>`;
+      return tr;
+    });
+    const tableHtml = `<table>
+      <thead>
+        <th>Name</th>
+        <th>Latest</th>
+        <th>Downloads</th>
+        <th>UpdatedAt</th>
+        <th>Updated</th>
+      </thead>
+      <tbody>
+        ${arr.join('')}
+      </tbody>
+    </table>`;
+    starsWrapper.find('.content').html(tableHtml);
+    const height = starsWrapper.find('.content-wrapper').height();
+    starsWrapper.css('margin-top', -(height / 2));
+  }).catch(err => starsWrapper.find('p').text(getErrorMessage(err)));
+}
+
 function initUserHandle() {
-  viewWrapper.on('click', '.header-wrapper .functions .logout', () => {
+  $('.header-wrapper .functions .user', viewWrapper).click(() => {
+    $('.header-wrapper .user-functions', viewWrapper).removeClass('hidden');
+  }).blur(() => {
+    const obj = $('.header-wrapper .user-functions', viewWrapper);
+    obj.css('opacity', 0);
+    _.delay(() => {
+      obj.addClass('hidden').css('opacity', 1);
+    }, 500);
+  });
+
+  $('.header-wrapper .user-functions .logout', viewWrapper).click(() => {
     userService.logout();
   });
+  $('.header-wrapper .user-functions .my-stars', viewWrapper).click(showMyStars);
+
+
   const staring = {};
   viewWrapper.on('click', '.modules-wrapper a.star', (e) => {
     const target = $(e.currentTarget);
@@ -393,7 +458,8 @@ userService.on('session', (userInfo) => {
   } else {
     loginBtn.addClass('hidden');
     userAvatar.removeClass('hidden').html(`<img src="${userInfo.avatar}" />`);
-    userService.getStars().then((modules) => {
+    userService.getStars().then((data) => {
+      const modules = _.map(data, item => item.name);
       starList.push(...modules);
       addStarStatus(viewWrapper.find('.modules-wrapper ul'));
     });

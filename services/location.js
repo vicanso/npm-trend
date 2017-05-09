@@ -1,12 +1,21 @@
 const request = require('superagent');
 const _ = require('lodash');
 
+const errors = localRequire('helpers/errors');
+const config = localRequire('config');
+
 exports.byIP = (ip) => {
-  const url = `http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip=${ip}`;
-  const keys = 'country province city'.split(' ');
+  const url = 'https://dm-81.data.aliyun.com/rest/160601/ip/getIpInfo.json';
   return request.get(url)
-    .set('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36')
-    .then(res => _.pick(res.body, keys));
+    .set('Authorization', `APPCODE ${config.ipAPPCode}`)
+    .set('Accept', 'application/json')
+    .query('ip', ip)
+    .then((res) => {
+      if (res.body.code !== 0) {
+        throw errors.get(7);
+      }
+      return _.pick(res.body, ['country', 'region', 'city', 'isp']);
+    });
 };
 
 exports.byMobile = (mobile) => {

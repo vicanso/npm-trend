@@ -13,6 +13,7 @@ const {
   randomToken,
 } = localRequire('helpers/utils');
 const influx = localRequire('helpers/influx');
+const locationService = localRequire('services/location');
 
 /**
  * 从用户信息中选择字段返回给前端使用，避免直接返回时把不应该展示的字段也返回了
@@ -125,14 +126,20 @@ exports.loginCallback = async (ctx) => {
     type: params.type,
   };
   ctx.session.user = user;
+  const ip = ctx.ip;
   userService.addLoginRecord({
     account: user.account,
     type: user.type,
     token: user.token,
     userAgent: ctx.get('User-Agent'),
-    ip: ctx.ip,
+    ip,
   });
-
+  locationService.byIP(ip).then((data) => {
+    const fields = _.extend({
+      ip,
+    }, data);
+    influx.write('login', fields);
+  }).catch(err => console.error(`Get location by ip(${ip}) fail, ${err.message}`));
   ctx.redirect(params['redirect-uri']);
 };
 

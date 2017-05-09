@@ -20,8 +20,10 @@ async function updatePeriodCounts(name) {
       $gte: moment().add(-90, 'day').format('YYYY-MM-DD'),
     },
   });
+  if (!docs.length) {
+    return;
+  }
   const dateDict = {
-    latest: moment().add(-1, 'day').format('YYYY-MM-DD'),
     week: moment().add(-7, 'day').format('YYYY-MM-DD'),
     month: moment().add(-30, 'day').format('YYYY-MM-DD'),
     quarter: moment().add(-90, 'day').format('YYYY-MM-DD'),
@@ -42,6 +44,9 @@ async function updatePeriodCounts(name) {
       }
     });
   });
+  const lastCount = _.last(docs);
+  result.downloads.latest = lastCount.downloads || 0;
+  result.dependeds.latest = lastCount.dependeds || 0;
   const doc = await NPM.findOne({
     name,
   });
@@ -212,7 +217,7 @@ exports.updateModules = async (names, forceUpdate = false) => {
         });
   };
   await Promise.map(names, doUpdate, {
-    concurrency: 30,
+    concurrency: 10,
   });
 };
 
@@ -231,7 +236,7 @@ exports.updateModulesDownloads = async () => {
     const doDownloadUpdate = name => exports.updateDownloads(name)
       .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
     await Promise.map(docs, item => doDownloadUpdate(item.name), {
-      concurrency: 100,
+      concurrency: 10,
     });
     console.info(`update downlaods progress ${(start + 1) * offset}/${count}`);
   };

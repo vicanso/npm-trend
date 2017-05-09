@@ -70,6 +70,7 @@ const initClient = (uri, options) => {
     },
     server: {
       poolSize: 5,
+      auto_reconnect: true,
     },
   }, options);
   const client = mongoose.createConnection(uri, opts);

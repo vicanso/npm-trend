@@ -46,7 +46,7 @@ exports.connectLimitOptions = {
 // cookie name
 exports.session = {
   key: pkg.name,
-  maxAge: 24 * 3600 * 1000,
+  maxAge: 7 * 24 * 3600 * 1000,
 };
 // admin token (jenny)
 exports.adminToken = '6a3f4389a53c889b623e67f385f28ab8e84e5029';
@@ -62,3 +62,5 @@ exports.mongoUri = process.env.MONGO || 'mongodb://127.0.0.1/npmtrend';
 exports.redisUri = process.env.REDIS || 'redis://127.0.0.1/';
 
 exports.udpLog = process.env.UDP_LOG;
+
+exports.ipAPPCode = process.env.IP_APP_CODE;

@@ -23,4 +23,8 @@ module.exports = {
     en: 'type is invalid, it should be type:#{type}',
     status: 406,
   },
+  7: {
+    en: 'get location by ip fail',
+    status: 500,
+  },
 };

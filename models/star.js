@@ -23,6 +23,10 @@ module.exports = {
       type: String,
       default: () => new Date().toISOString(),
     },
+    latest: {
+      version: String,
+      time: String,
+    },
     enabled: {
       type: Boolean,
       default: true,

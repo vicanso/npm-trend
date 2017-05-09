@@ -98,6 +98,11 @@ exports.addLoginRecord = async (data) => {
 
 exports.addStar = async (data) => {
   const Star = Models.get('Star');
+  const NPM = Models.get('Npm');
+  const pkg = await NPM.findOne({
+    name: data.module,
+  }, 'latest');
+  data.latest = pkg.latest;
   const doc = await Star.findOne(data);
   if (!doc) {
     await new Star(data).save();
@@ -119,10 +124,27 @@ exports.removeStar = async (data) => {
 
 exports.getStars = async (account, type) => {
   const Star = Models.get('Star');
+  const NPM = Models.get('Npm');
   const docs = await Star.find({
     account,
     type,
     enabled: true,
-  }, 'module');
-  return _.map(docs, doc => doc.module);
+  });
+  const modules = [];
+  const startVersions = {};
+  _.forEach(docs, (doc) => {
+    const name = doc.module;
+    modules.push(name);
+    startVersions[name] = doc.latest;
+  });
+  const pkgs = await NPM.find({
+    name: {
+      $in: modules,
+    },
+  }, 'name latest downloads');
+  return _.map(pkgs, (doc) => {
+    const result = _.pick(doc, ['name', 'latest', 'downloads']);
+    result.starVersion = startVersions[doc.name];
+    return result;
+  });
 };
