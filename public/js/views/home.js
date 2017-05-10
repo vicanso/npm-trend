@@ -25,6 +25,7 @@ import {
 
 let viewWrapper;
 const starList = [];
+const destroyList = [];
 
 function showMyStars() {
   const html = `<div class="stars-wrapper">
@@ -99,25 +100,31 @@ function showMyStars() {
   }).catch(err => starsWrapper.find('p').text(getErrorMessage(err)));
 }
 
-function initUserHandle() {
-  $('.header-wrapper .functions .user', viewWrapper).click(() => {
-    $('.header-wrapper .user-functions', viewWrapper).removeClass('hidden');
+function initUserHandle(wrapper) {
+  const loginSelector = '.header-wrapper .functions .login';
+  const logoutSelector = '.header-wrapper .user-functions .logout';
+  const userSelector = '.header-wrapper .functions .user';
+  const functionsSelector = '.header-wrapper .user-functions';
+  const myStarsSelector = '.header-wrapper .user-functions .my-stars';
+
+  $(userSelector, wrapper).click(() => {
+    $(functionsSelector, wrapper).removeClass('hidden');
   }).blur(() => {
-    const obj = $('.header-wrapper .user-functions', viewWrapper);
+    const obj = $(functionsSelector, wrapper);
     obj.css('opacity', 0);
     _.delay(() => {
       obj.addClass('hidden').css('opacity', 1);
     }, 500);
   });
 
-  $('.header-wrapper .user-functions .logout', viewWrapper).click(() => {
+  $(logoutSelector, wrapper).click(() => {
     userService.logout();
   });
-  $('.header-wrapper .user-functions .my-stars', viewWrapper).click(showMyStars);
+  $(myStarsSelector, wrapper).click(showMyStars);
 
 
   const staring = {};
-  viewWrapper.on('click', '.modules-wrapper a.star', (e) => {
+  wrapper.on('click', '.modules-wrapper a.star', (e) => {
     const target = $(e.currentTarget);
     const name = target.siblings('.module').text();
     if (staring[name]) {
@@ -138,6 +145,58 @@ function initUserHandle() {
         alert(getErrorMessage(err));
       });
   });
+
+  const changeLoginStatus = (userInfo) => {
+    const loginBtn = $(loginSelector, wrapper);
+    const userAvatar = $(userSelector, wrapper);
+    if (!userInfo || !userInfo.account) {
+      loginBtn.removeClass('hidden');
+      userAvatar.addClass('hidden');
+    } else {
+      loginBtn.addClass('hidden');
+      userAvatar.removeClass('hidden')
+      .html(`<img src="${userInfo.avatar}" />`);
+    }
+  };
+
+  const showUpdateCount = (stars) => {
+    const userAvatar = $(userSelector, wrapper);
+    let updatedCount = 0;
+    _.forEach(stars, (item) => {
+      if (item.latest.time > item.starVersion.time) {
+        updatedCount += 1;
+      }
+    });
+    const countObj = $(myStarsSelector, wrapper).find('.count');
+    if (updatedCount) {
+      userAvatar.append('<div class="dot" />');
+      if (countObj.length) {
+        countObj.text(updatedCount);
+      } else {
+        $(myStarsSelector, wrapper)
+          .append(`<span class="count">${updatedCount}</span>`);
+      }
+    } else {
+      userAvatar.find('.dot').remove();
+      countObj.remove();
+    }
+  };
+
+  let currentUser;
+  const unsubscribe = userService.subscribe(() => {
+    const state = userService.getState();
+    if (state.basic.account !== currentUser) {
+      currentUser = state.basic.account;
+      changeLoginStatus(state.basic);
+      if (currentUser) {
+        userService.getStars();
+      }
+    }
+    if (state.stars) {
+      showUpdateCount(state.stars);
+    }
+  });
+  destroyList.push(unsubscribe);
 }
 
 function addStarStatus(target) {
@@ -438,6 +497,11 @@ function initCompareHandle() {
   renderCompareList();
 }
 
+function destroy() {
+  _.forEach(destroyList, fn => fn());
+}
+
+
 locationService.on('change', (data) => {
   if (data.path !== VIEW_HOME) {
     return;
@@ -452,7 +516,7 @@ locationService.on('change', (data) => {
     initSearchHandle();
     initDownloadTrendHandle();
     initCompareHandle();
-    initUserHandle();
+    initUserHandle(viewWrapper);
   } else {
     const selector = '.modules-wrapper';
     const item = $(selector, viewWrapper);
@@ -468,34 +532,5 @@ locationService.on('change', (data) => {
   const q = getQueryParam('q');
   if (q) {
     $('.search-component input', viewWrapper).val(q);
-  }
-});
-
-userService.on('session', (userInfo) => {
-  const loginBtn = $('.header-wrapper .functions .login', viewWrapper);
-  const userAvatar = $('.header-wrapper .functions .user', viewWrapper);
-  if (!userInfo || !userInfo.account) {
-    loginBtn.removeClass('hidden');
-    userAvatar.addClass('hidden');
-    starList.length = 0;
-  } else {
-    loginBtn.addClass('hidden');
-    userAvatar.removeClass('hidden')
-      .html(`<img src="${userInfo.avatar}" />`);
-    userService.getStars().then((data) => {
-      let updatedCount = 0;
-      _.forEach(data, (item) => {
-        if (item.latest.time > item.starVersion.time) {
-          updatedCount += 1;
-        }
-        starList.push(item.name);
-      });
-      if (updatedCount) {
-        userAvatar.append('<div class="dot" />');
-        $('.user-functions .my-stars', viewWrapper)
-          .append(`<span>${updatedCount}</span>`);
-      }
-      addStarStatus(viewWrapper.find('.modules-wrapper ul'));
-    });
   }
 });

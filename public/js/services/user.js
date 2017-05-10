@@ -1,6 +1,6 @@
 import store from 'store';
 import _ from 'lodash';
-import EventEmitter from 'events';
+import { createStore } from 'redux';
 
 import * as http from '../helpers/http';
 import * as globals from '../helpers/globals';
@@ -12,35 +12,54 @@ import {
 } from '../constants/urls';
 import * as locationService from './location';
 
-const userBehavior = store.get('userBehavior') || [];
-const emiter = new EventEmitter();
+const BASIC_INFO = 'BASIC_INFO';
+const STARS = 'STARS';
 
-export function on(...args) {
-  emiter.on(...args);
+const userBehavior = store.get('userBehavior') || [];
+
+function user(state = {}, action) {
+  switch (action.type) {
+    case BASIC_INFO:
+      return _.extend(state, {
+        basic: action.data,
+      });
+    case STARS:
+      return _.extend(state, {
+        stars: action.data,
+      })
+    default:
+      return state;
+  }
 }
 
-export function off(...args) {
-  emiter.off(...args);
+const userStore = createStore(user);
+
+export function subscribe(...args) {
+  return userStore.subscribe(...args);
+}
+
+export function getState() {
+  return userStore.getState();
 }
 
 export function me() {
   return http.get(USER_ME)
     .noCache()
-    .then((res) => {
-      const userInfo = res.body;
-      emiter.emit('session', userInfo);
-      return userInfo;
-    });
+    .then(res => userStore.dispatch({
+      type: BASIC_INFO,
+      data: res.body,
+    }));
 }
 
 export function logout() {
   return http.del(USER_LOGOUT)
     .noCache()
-    .then((res) => {
-      const userInfo = res.body || { account: '' };
-      emiter.emit('session', userInfo);
-      return userInfo;
-    });
+    .then(() => userStore.dispatch({
+      type: BASIC_INFO,
+      data: {
+        account: '',
+      },
+    }));
 }
 
 export function addStar(module) {
@@ -58,7 +77,10 @@ export function updateStar(module) {
 export function getStars() {
   return http.get(USER_STAR)
     .noCache()
-    .then(res => res.body);
+    .then(res => userStore.dispatch({
+      type: STARS,
+      data: res.body,
+    }));
 }
 
 export function addBehavior(type, data) {

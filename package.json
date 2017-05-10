@@ -69,6 +69,7 @@
     "npm-apis": "^1.1.1",
     "performance-nodejs": "^1.0.6",
     "pug": "^2.0.0-beta11",
+    "redux": "^3.6.0",
     "require-tree": "^1.1.1",
     "simple-stringify": "^1.1.1",
     "store": "^2.0.4",

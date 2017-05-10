@@ -70,7 +70,7 @@ exports.client = client;
 exports.write = (measurement, fields, ...args) => {
   /* istanbul ignore if */
   if (!client) {
-    console.info('measurement:%s, fields:%j, args:%j', measurement, fields, args);
+    debug('measurement:%s, fields:%j, args:%j', measurement, fields, args);
     return null;
   }
   const writer = client.write(measurement)
