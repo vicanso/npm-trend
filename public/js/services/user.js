@@ -44,15 +44,15 @@ export function logout() {
 }
 
 export function addStar(module) {
-  return http.post(`${USER_STAR}/${module}`, {
-    module,
-  });
+  return http.post(`${USER_STAR}/${module}`);
 }
 
 export function removeStar(module) {
-  return http.del(`${USER_STAR}/${module}`, {
-    module,
-  });
+  return http.del(`${USER_STAR}/${module}`);
+}
+
+export function updateStar(module) {
+  return http.put(`${USER_STAR}/${module}`);
 }
 
 export function getStars() {

@@ -5,7 +5,7 @@ const moment = require('moment');
 const Models = localRequire('models');
 const errors = localRequire('helpers/errors');
 
-npmApis.timeout = 5 * 1000;
+npmApis.timeout = 10 * 1000;
 
 /**
  * Update the counts of module
@@ -217,7 +217,7 @@ exports.updateModules = async (names, forceUpdate = false) => {
         });
   };
   await Promise.map(names, doUpdate, {
-    concurrency: 10,
+    concurrency: 5,
   });
 };
 
@@ -236,7 +236,7 @@ exports.updateModulesDownloads = async () => {
     const doDownloadUpdate = name => exports.updateDownloads(name)
       .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
     await Promise.map(docs, item => doDownloadUpdate(item.name), {
-      concurrency: 10,
+      concurrency: 5,
     });
     console.info(`update downlaods progress ${(start + 1) * offset}/${count}`);
   };
@@ -296,7 +296,7 @@ exports.updateMoudlesDependeds = async (list) => {
       console.error(`update ${item.name} dependeds fail, ${err.message}`);
     }
   }, {
-    concurrency: 10,
+    concurrency: 5,
   });
 };
 

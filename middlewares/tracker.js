@@ -32,6 +32,11 @@ module.exports = (category, params) => (ctx, next) => {
     ip: ctx.ip,
   };
   _.forEach(params, (param) => {
+    if (param.charAt(0) === ':') {
+      const key = param.substring(1);
+      data[key] = ctx[key];
+      return;
+    }
     _.forEach(['request.body', 'params', 'query'], (key) => {
       const v = _.get(ctx, `${key}.${param}`);
       if (_.isNil(data[param]) && !_.isNil(v)) {

@@ -153,12 +153,16 @@ exports.star = async (ctx) => {
     type: user.type,
     module: data.module,
   };
-  if (ctx.method === 'POST') {
-    await userService.addStar(options);
-    ctx.status = 201;
-  } else {
+  if (ctx.method === 'DELETE') {
     await userService.removeStar(options);
     ctx.status = 204;
+  } else {
+    await userService.star(options);
+    if (ctx.method === 'POST') {
+      ctx.status = 201;
+    } else {
+      ctx.status = 204;
+    }
   }
 };
 

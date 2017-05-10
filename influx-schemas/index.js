@@ -88,6 +88,7 @@ const schemas = {
       use: 'integer',
       ip: 'string',
       token: 'string',
+      module: 'string',
     },
     tags: {
       category: '*',

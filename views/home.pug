@@ -42,13 +42,14 @@ mixin Modules(items)
         if downloads
           +Downloads(downloads)
         - var author = item.author && item.author.name
-        .updatedAt published #{moment(item.latest.time).fromNow()} 
+        .updatedAt
           if author
-            | by 
+            +FontIcon('fa-user-circle-o mright5') 
             if currentAuthor === author
               a.author.selected(href=URL('/')) #{author}
             else
               a.author(href=URL(`/?author=${encodeURIComponent(author)}`)) #{author}
+          span.mleft10 Published #{moment(item.latest.time).fromNow()} 
 
 mixin HeaderView()
   header.header-wrapper

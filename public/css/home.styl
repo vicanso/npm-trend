@@ -68,15 +68,25 @@ headerWrapperCss()
         &.selected
           color $COLOR_LIGHT_GREEN
         &.user
+          position relative
           img
             display block
             width 22px
             margin-top 5px
             border-radius 40px
+          .dot
+            background-color $COLOR_BLUE
+            width 8px
+            height @width 
+            border-radius 10px
+            position absolute
+            right -3px 
+            top 0
+
     .user-functions
       top 60px
       display block
-      width 150px
+      width 130px
       right 0
       padding 0
       ul
@@ -90,6 +100,12 @@ headerWrapperCss()
           &:hover
             color #fff
             background-color $COLOR_BLUE
+          span
+            background-color $COLOR_RED
+            color #fff
+            padding 0 6px
+            margin-left 5px
+            border-radius 10px
       .arrow-up, .arrow-up-shadow
         right 20px
 
@@ -117,8 +133,8 @@ filterWrapperCss()
     position absolute
     left 0
     right 0
-    top $headerHeigh
     background-color $COLOR_DARK_BLUE
+    z-index 9
     ul
       border-top $GRAY_BORDER
       margin 0 
@@ -283,9 +299,15 @@ starsWrapperCss()
           color #fff
       table
         width 100%
+        tr
+          border-bottom $GRAY_BORDER 
         th, td
-          padding 5px
+          padding 7px 5px
           text-align center
+        .got
+          color $COLOR_LIGHT_GRAY
+          &.active
+            color $COLOR_DARK_BLUE
 
 .home-view
   headerWrapperCss()

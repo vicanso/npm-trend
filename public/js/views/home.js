@@ -33,7 +33,7 @@ function showMyStars() {
         <a href="javascript:;" class="close pull-right tac">
           <i class="fa fa-times" aria-hidden="true"></i>
         </a>
-        My Stars
+        My Stars(x module has been update after star)
       </h4>
       <div class="content">
         <p class="tac">Loading</p>
@@ -44,17 +44,39 @@ function showMyStars() {
   starsWrapper.find('a.close').click(() => {
     starsWrapper.remove();
   });
+  starsWrapper.on('click', '.unstar, .got.active', (e) => {
+    const target = $(e.currentTarget);
+    const tr = target.closest('tr');
+    const name = tr.find('td:first').text();
+    const type = target.hasClass('got') ? 'update' : 'remove';
+    const fn = type === 'update' ? 'updateStar' : 'removeStar';
+    userService[fn](name).then(() => {
+      if (type === 'remove') {
+        tr.remove();
+        return;
+      }
+      target.removeClass('active');
+    });
+  });
   userService.getStars().then((data) => {
     const arr = _.map(data, (item) => {
       const downloads = _.get(item, 'downloads.latest', 0);
+      let gotCls = 'got mright5';
+      if (item.latest.time > item.starVersion.time) {
+        gotCls += ' active';
+      }
       const tr = `<tr>
         <td>${item.name}</td>
         <td>${item.latest.version}</td>
         <td>${downloads.toLocaleString()}</td>
         <td>${moment(item.latest.time).format('YYYY-MM-DD HH:mm')}</td>
-        <td title="Updated after star">
-          <i class="fa fa-refresh" aria-hidden="true"></i>
-          ${item.latest.time > item.starVersion.time}
+        <td>
+          <a href="javascript:;" class="${gotCls}" title="Updated after star">
+            <i class="fa fa-check" aria-hidden="true"></i> Got
+          </a>
+          <a href="javascript:;" class="unstar">
+            <i class="fa fa-star-half-o" aria-hidden="true"></i> Unstar
+          </a>
         </td>
       </tr>`;
       return tr;
@@ -65,7 +87,7 @@ function showMyStars() {
         <th>Latest</th>
         <th>Downloads</th>
         <th>UpdatedAt</th>
-        <th>Updated</th>
+        <th>OP</th>
       </thead>
       <tbody>
         ${arr.join('')}
@@ -401,6 +423,7 @@ function initCompareHandle() {
     if (target.hasClass('clear')) {
       npmService.clearCompare();
       compareWrapper.remove();
+      $('.modules-wrapper .compare.selected', viewWrapper).removeClass('selected');
       return;
     }
     compareWrapper.find('.compare-chart-wrapper').remove();
@@ -457,10 +480,21 @@ userService.on('session', (userInfo) => {
     starList.length = 0;
   } else {
     loginBtn.addClass('hidden');
-    userAvatar.removeClass('hidden').html(`<img src="${userInfo.avatar}" />`);
+    userAvatar.removeClass('hidden')
+      .html(`<img src="${userInfo.avatar}" />`);
     userService.getStars().then((data) => {
-      const modules = _.map(data, item => item.name);
-      starList.push(...modules);
+      let updatedCount = 0;
+      _.forEach(data, (item) => {
+        if (item.latest.time > item.starVersion.time) {
+          updatedCount += 1;
+        }
+        starList.push(item.name);
+      });
+      if (updatedCount) {
+        userAvatar.append('<div class="dot" />');
+        $('.user-functions .my-stars', viewWrapper)
+          .append(`<span>${updatedCount}</span>`);
+      }
       addStarStatus(viewWrapper.find('.modules-wrapper ul'));
     });
   }

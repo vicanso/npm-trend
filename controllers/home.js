@@ -40,9 +40,9 @@ module.exports = async (ctx) => {
     limit: Joi.number().integer().min(1).max(100)
       .default(20),
     created: Joi.string()
-      .valid('-1d', '-7d', '-30d', '-90d'),
+      .valid('-1d', '-7d', '-30d', '-90d', '-180d', '-360d'),
     updated: Joi.string()
-      .valid('-1d', '-7d', '-30d', '-90d'),
+      .valid('-1d', '-7d', '-30d', '-90d', '-180d', '-360d'),
   });
   const sort = {};
   sort[options.sort] = options.sortBy === 'desc' ? -1 : 1;
@@ -115,22 +115,20 @@ module.exports = async (ctx) => {
     return module;
   });
   ctx.setCache(600);
+  const dateFilters = {
+    '-1d': 'Last 1 day',
+    '-7d': 'Last 7 days',
+    '-30d': 'Last 30 days',
+    '-90d': 'Last 90 days',
+    '-180d': 'Last 180 days',
+    '-360d': 'Last 360 days',
+  };
   _.extend(ctx.state, {
     title: 'The modules you want',
     viewData: {
       sorts,
-      updatedAt: {
-        '-1d': 'Last 1 day',
-        '-7d': 'Last 7 days',
-        '-30d': 'Last 30 days',
-        '-90d': 'Last 90 days',
-      },
-      createdAt: {
-        '-1d': 'Last 1 day',
-        '-7d': 'Last 7 days',
-        '-30d': 'Last 30 days',
-        '-90d': 'Last 90 days',
-      },
+      updatedAt: dateFilters,
+      createdAt: dateFilters,
       modules,
       query: ctx.query,
     },

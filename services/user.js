@@ -96,7 +96,7 @@ exports.addLoginRecord = async (data) => {
 };
 
 
-exports.addStar = async (data) => {
+exports.star = async (data) => {
   const Star = Models.get('Star');
   const NPM = Models.get('Npm');
   const pkg = await NPM.findOne({
@@ -108,6 +108,7 @@ exports.addStar = async (data) => {
     await new Star(data).save();
   } else if (!doc.enabled) {
     doc.set('enabled', true);
+    doc.set('latest', data.latest);
     await doc.save();
   }
 };
