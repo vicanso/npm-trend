@@ -29,7 +29,7 @@ module.exports = (category, params) => (ctx, next) => {
   const data = {
     category,
     token: ctx.get('X-User-Token'),
-    ip: ctx.ip,
+    ip: ctx.ipv4,
   };
   _.forEach(params, (param) => {
     if (param.charAt(0) === ':') {

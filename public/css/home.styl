@@ -207,11 +207,11 @@ modulesWrapperCss()
       .author.selected
         color $COLOR_RED
         font-weight $FONT_BOLD
-    .downloads
+    .counts
       margin 5px 0
       > *
         display inline-block
-        margin-right 8px
+        margin 0 8px 5px 0
         border-radius 3px
         color #fff
         overflow hidden
@@ -232,6 +232,8 @@ modulesWrapperCss()
           background-color $COLOR_LIGHT_GREEN
         &.quarter .count
           background-color $COLOR_LIGHT_BLACK
+        &.depCount .count
+          background-color $COLOR_BLUE
     .updatedAt
       color $COLOR_DARK_BLUE
 
@@ -285,7 +287,6 @@ starsWrapperCss()
       left 0
       right 0
       background-color #fff
-      margin-top -45px
       h4
         margin 0
         background-color $COLOR_DARK_BLUE
@@ -297,19 +298,32 @@ starsWrapperCss()
           height 100%
           width 30px
           color #fff
+      .content
+        max-height 500px
+        overflow auto
+        overflow-scrolling touch
       table
         width 100%
+        thead
+          background-color $COLOR_GRAY_WHITE
         tr
           border-bottom $GRAY_BORDER 
+          &:nth-child(even)
+            background-color $COLOR_GRAY_WHITE
         th, td
-          padding 7px 5px
+          padding 10px 5px
           text-align center
+          a
+            margin-right 10px
+            &:last-child
+              margin-right 0
         .got
           color $COLOR_LIGHT_GRAY
           &.active
             color $COLOR_DARK_BLUE
 
 .home-view
+  padding-bottom 40px
   headerWrapperCss()
   filterWrapperCss()
   .modules-count-wrapper

@@ -126,7 +126,7 @@ exports.loginCallback = async (ctx) => {
     type: params.type,
   };
   ctx.session.user = user;
-  const ip = ctx.ip;
+  const ip = ctx.ipv4;
   userService.addLoginRecord({
     account: user.account,
     type: user.type,
@@ -157,12 +157,7 @@ exports.star = async (ctx) => {
     await userService.removeStar(options);
     ctx.status = 204;
   } else {
-    await userService.star(options);
-    if (ctx.method === 'POST') {
-      ctx.status = 201;
-    } else {
-      ctx.status = 204;
-    }
+    ctx.body = await userService.star(options);
   }
 };
 

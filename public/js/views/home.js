@@ -24,24 +24,61 @@ import {
 } from '../constants/urls';
 
 let viewWrapper;
-const starList = [];
 const destroyList = [];
 
 function showMyStars() {
+  let updatedCount = 0;
+  const arr = _.map(userService.getState().star.modules, (item) => {
+    const downloads = _.get(item, 'downloads.latest', 0);
+    let gotCls = 'got';
+    if (item.latest.time > item.starVersion.time) {
+      gotCls += ' active';
+      updatedCount += 1;
+    }
+    const tr = `<tr>
+      <td>${item.name}</td>
+      <td>${item.latest.version}</td>
+      <td>${downloads.toLocaleString()}</td>
+      <td>${moment(item.latest.time).format('YYYY-MM-DD HH:mm')}</td>
+      <td>
+        <a href="javascript:;" class="${gotCls}" title="Updated after star">
+          <i class="fa fa-check" aria-hidden="true"></i> Got
+        </a>
+        <a href="javascript:;" class="unstar">
+          <i class="fa fa-star-half-o" aria-hidden="true"></i> Unstar
+        </a>
+      </td>
+    </tr>`;
+    return tr;
+  });
+  const tableHtml = `<table>
+    <thead>
+      <th>Name</th>
+      <th>Latest</th>
+      <th>Downloads</th>
+      <th>UpdatedAt</th>
+      <th>OP</th>
+    </thead>
+    <tbody>
+      ${arr.join('')}
+    </tbody>
+  </table>`;
   const html = `<div class="stars-wrapper">
     <div class="content-wrapper">
       <h4>
         <a href="javascript:;" class="close pull-right tac">
           <i class="fa fa-times" aria-hidden="true"></i>
         </a>
-        My Stars(x module has been update after star)
+        My Stars(${updatedCount} module has been update after star)
       </h4>
       <div class="content">
-        <p class="tac">Loading</p>
+        ${tableHtml}
       </div>
     </div>
   </div>`;
   const starsWrapper = $(html).appendTo(viewWrapper);
+  const contentWrapper = starsWrapper.find('.content-wrapper');
+  contentWrapper.css('margin-top', -(contentWrapper.height() / 2));
   starsWrapper.find('a.close').click(() => {
     starsWrapper.remove();
   });
@@ -59,45 +96,20 @@ function showMyStars() {
       target.removeClass('active');
     });
   });
-  userService.getStars().then((data) => {
-    const arr = _.map(data, (item) => {
-      const downloads = _.get(item, 'downloads.latest', 0);
-      let gotCls = 'got mright5';
-      if (item.latest.time > item.starVersion.time) {
-        gotCls += ' active';
-      }
-      const tr = `<tr>
-        <td>${item.name}</td>
-        <td>${item.latest.version}</td>
-        <td>${downloads.toLocaleString()}</td>
-        <td>${moment(item.latest.time).format('YYYY-MM-DD HH:mm')}</td>
-        <td>
-          <a href="javascript:;" class="${gotCls}" title="Updated after star">
-            <i class="fa fa-check" aria-hidden="true"></i> Got
-          </a>
-          <a href="javascript:;" class="unstar">
-            <i class="fa fa-star-half-o" aria-hidden="true"></i> Unstar
-          </a>
-        </td>
-      </tr>`;
-      return tr;
-    });
-    const tableHtml = `<table>
-      <thead>
-        <th>Name</th>
-        <th>Latest</th>
-        <th>Downloads</th>
-        <th>UpdatedAt</th>
-        <th>OP</th>
-      </thead>
-      <tbody>
-        ${arr.join('')}
-      </tbody>
-    </table>`;
-    starsWrapper.find('.content').html(tableHtml);
-    const height = starsWrapper.find('.content-wrapper').height();
-    starsWrapper.css('margin-top', -(height / 2));
-  }).catch(err => starsWrapper.find('p').text(getErrorMessage(err)));
+}
+
+function addStarStatus(target) {
+  const list = $('li a.module', target);
+  const starList = _.map(userService.getState().star.modules, item => item.name);
+  _.forEach(list, (item) => {
+    const obj = $(item);
+    const star = obj.siblings('.star');
+    if (_.indexOf(starList, obj.text()) !== -1) {
+      star.addClass('selected');
+    } else {
+      star.removeClass('selected');
+    }
+  });
 }
 
 function initUserHandle(wrapper) {
@@ -182,31 +194,24 @@ function initUserHandle(wrapper) {
     }
   };
 
-  let currentUser;
+  let userToken = '';
+  let starToken = '';
   const unsubscribe = userService.subscribe(() => {
     const state = userService.getState();
-    if (state.basic.account !== currentUser) {
-      currentUser = state.basic.account;
+    if (userToken !== state.token) {
       changeLoginStatus(state.basic);
-      if (currentUser) {
+      if (state.basic.account) {
         userService.getStars();
       }
     }
-    if (state.stars) {
-      showUpdateCount(state.stars);
+    if (state.star && starToken !== state.star.token) {
+      showUpdateCount(state.star.modules);
+      addStarStatus($('.modules-wrapper', wrapper));
     }
+    userToken = state.token;
+    starToken = state.star.token;
   });
   destroyList.push(unsubscribe);
-}
-
-function addStarStatus(target) {
-  const list = $('li a.module', target);
-  _.forEach(list, (item) => {
-    const obj = $(item);
-    if (_.indexOf(starList, obj.text()) !== -1) {
-      obj.siblings('.star').addClass('selected');
-    }
-  });
 }
 
 // set the click event for about tips
@@ -502,8 +507,10 @@ function destroy() {
 }
 
 
-locationService.on('change', (data) => {
+locationService.subscribe(() => {
+  const data = locationService.getState();
   if (data.path !== VIEW_HOME) {
+    destroy();
     return;
   }
   getMoreOptions.offset = 0;

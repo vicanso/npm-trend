@@ -10,6 +10,7 @@ module.exports = {
       'debug',
       'jquery',
       'moment',
+      'redux',
       'superagent',
       'url-parse',
     ],

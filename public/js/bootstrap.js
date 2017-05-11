@@ -86,7 +86,7 @@ function initScroll() {
   });
 }
 
-locationService.on('change', () => userService.addBehavior('pv'));
+locationService.subscribe(() => userService.addBehavior('pv'));
 
 _.defer(() => {
   globarErrorCatch();

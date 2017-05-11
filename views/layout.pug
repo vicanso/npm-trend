@@ -23,6 +23,9 @@ html(lang='zh-CN')
   body
     block bodyContainer
 
+    footer.footer-wrapper
+      a(href="www.miitbeian.gov.cn").mright5 粤ICP备17025766号
+      span © #{new Date().getFullYear()} Tree.Xie (Something or nothing)
   if viewData && viewData.globals
     script.
       window.JT_GLOBALS = !{JSON.stringify(viewData.globals)};

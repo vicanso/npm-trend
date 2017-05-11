@@ -12,12 +12,15 @@ mixin Keywords(keywords)
         a(href=URL(`/?keyword=${keyword}`)) #{keyword}
       if index !== last
         span ,
-mixin Downloads(downloads)
-  .downloads
+mixin Counts(downloads, dependedCount)
+  .counts
     each type in ['latest', 'week', 'month', 'quarter']
       div(class=type, title=`the download of ${type}`)
         span.type #{type}
         span.count #{numberFormat(downloads[type])}
+    .depCount(title='the count of depended')
+      span.type dep
+      span.count #{numberFormat(dependedCount)}
 
 mixin Modules(items)
   ul
@@ -40,7 +43,7 @@ mixin Modules(items)
           +Keywords(item.keywords)
         - var downloads = item.downloads
         if downloads
-          +Downloads(downloads)
+          +Counts(downloads, item.dependedCount)
         - var author = item.author && item.author.name
         .updatedAt
           if author

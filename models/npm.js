@@ -68,6 +68,9 @@ module.exports = {
       keywords: 1,
     },
     {
+      dependedCount: 1,
+    },
+    {
       'author.name': 1,
     },
     {

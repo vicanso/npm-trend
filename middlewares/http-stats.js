@@ -38,7 +38,7 @@ module.exports = options => httpStats(options, (p, statsData, ctx) => {
   }
   globals.set('performance.http', performance);
   const fields = _.omit(statsData, tagKeys);
-  fields.ip = ctx.ip;
+  fields.ip = ctx.ipv4;
   fields.url = ctx.url;
   const requestedAt = parseInt(ctx.get('X-Requested-At') || 0, 10);
   if (requestedAt) {

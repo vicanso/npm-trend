@@ -23,6 +23,12 @@ const globals = localRequire('helpers/globals');
  */
 module.exports = (processName, appUrlPrefix) => (ctx, next) => {
   const currentPath = ctx.path;
+  // 对IP地址的过滤出IPV4（因为地址是标准形式，所以只用简单正则获取）
+  const ipv4Reg = /(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}/;
+  const result = ipv4Reg.exec(ctx.ip);
+  if (result && result[0]) {
+    ctx.ipv4 = result[0];
+  }
   const tokenKey = 'X-User-Token';
   if (!ctx.get(tokenKey)) {
     ctx.req.headers[tokenKey.toLowerCase()] = 'unknown';

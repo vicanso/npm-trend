@@ -101,16 +101,19 @@ exports.star = async (data) => {
   const NPM = Models.get('Npm');
   const pkg = await NPM.findOne({
     name: data.module,
-  }, 'latest');
+  }, 'name latest downloads');
   data.latest = pkg.latest;
-  const doc = await Star.findOne(data);
+  let doc = await Star.findOne(data);
   if (!doc) {
-    await new Star(data).save();
+    doc = await new Star(data).save();
   } else if (!doc.enabled) {
     doc.set('enabled', true);
     doc.set('latest', data.latest);
     await doc.save();
   }
+  const result = _.pick(pkg, ['name', 'latest', 'downloads']);
+  result.starVersion = doc.latest;
+  return result;
 };
 
 exports.removeStar = async (data) => {

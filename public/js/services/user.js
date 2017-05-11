@@ -11,22 +11,71 @@ import {
   USER_STAR,
 } from '../constants/urls';
 import * as locationService from './location';
+import * as utils from '../helpers/utils';
 
 const BASIC_INFO = 'BASIC_INFO';
 const STARS = 'STARS';
+const STAR_MODULE = 'STAR_MODULE';
+const UNSTAR_MODULE = 'UNSTAR_MODULE';
+const STAR_MODULE_UPDATE = 'STAR_MODULE_UPDATE';
 
 const userBehavior = store.get('userBehavior') || [];
 
-function user(state = {}, action) {
+const defaultState = {
+  token: utils.token(),
+  basic: {},
+  star: {
+    token: utils.token(),
+    modules: [],
+  },
+};
+
+function user(state = defaultState, action) {
+  const token = utils.token;
   switch (action.type) {
     case BASIC_INFO:
       return _.extend(state, {
+        token: token(),
         basic: action.data,
       });
     case STARS:
       return _.extend(state, {
-        stars: action.data,
-      })
+        star: {
+          token: token(),
+          modules: action.data,
+        },
+      });
+    case STAR_MODULE: {
+      const modules = state.star.modules.slice(0);
+      modules.push(action.data);
+      return _.extend(state, {
+        star: {
+          token: token(),
+          modules,
+        },
+      });
+    }
+    case UNSTAR_MODULE: {
+      const name = action.data.name;
+      const modules = _.filter(state.star.modules, item => item.name !== name);
+      return _.extend(state, {
+        star: {
+          token: token(),
+          modules,
+        },
+      });
+    }
+    case STAR_MODULE_UPDATE: {
+      const name = action.data.name;
+      const modules = _.filter(state.star.modules, item => item.name !== name);
+      modules.push(action.data);
+      return _.extend(state, {
+        star: {
+          token: token(),
+          modules,
+        },
+      });
+    }
     default:
       return state;
   }
@@ -63,15 +112,29 @@ export function logout() {
 }
 
 export function addStar(module) {
-  return http.post(`${USER_STAR}/${module}`);
+  return http.post(`${USER_STAR}/${module}`)
+    .then(res => userStore.dispatch({
+      type: STAR_MODULE,
+      data: res.body,
+    }));
 }
 
 export function removeStar(module) {
-  return http.del(`${USER_STAR}/${module}`);
+  return http.del(`${USER_STAR}/${module}`)
+    .then(() => userStore.dispatch({
+      type: UNSTAR_MODULE,
+      data: {
+        name: module,
+      },
+    }));
 }
 
 export function updateStar(module) {
-  return http.put(`${USER_STAR}/${module}`);
+  return http.put(`${USER_STAR}/${module}`)
+    .then(res => userStore.dispatch({
+      type: STAR_MODULE_UPDATE,
+      data: res.body,
+    }));
 }
 
 export function getStars() {

@@ -1,13 +1,31 @@
-import EventEmitter from 'events';
 import _ from 'lodash';
 import URL from 'url-parse';
+import { createStore } from 'redux';
 
 import * as globals from '../helpers/globals';
 
 const history = globals.get('history');
-const emiter = new EventEmitter();
 let prevPath = '';
 let currentUrl = '';
+const CHANGE = 'CHANGE';
+
+const defaultState = {
+  prevPath: '',
+  path: '',
+  query: null,
+  url: '',
+};
+
+function location(state = defaultState, action) {
+  switch (action.type) {
+    case CHANGE:
+      return _.extend(state, action.data);
+    default:
+      return state;
+  }
+}
+
+const locationStore = createStore(location);
 
 function emitChange(url) {
   const urlInfos = new URL(url, true);
@@ -19,19 +37,22 @@ function emitChange(url) {
     url: currentUrl,
   };
   prevPath = info.path;
-  emiter.emit('change', info);
+  locationStore.dispatch({
+    type: CHANGE,
+    data: info,
+  });
+}
+
+export function subscribe(...args) {
+  return locationStore.subscribe(...args);
+}
+
+export function getState() {
+  return locationStore.getState();
 }
 
 export function getCurrentUrl() {
   return currentUrl;
-}
-
-export function on(...args) {
-  emiter.on(...args);
-}
-
-export function off(...args) {
-  emiter.off(...args);
 }
 
 export function push(url, title = '') {

@@ -24,6 +24,7 @@ module.exports = async (ctx) => {
     'downloads.week': 'Downloads(7 days)',
     'downloads.month': 'Downloads(30 days)',
     'downloads.quarter': 'Downloads(90 days)',
+    dependedCount: 'The depended count',
     'latest.time': 'Time of latest version',
     createdTime: 'Time of create',
   };
