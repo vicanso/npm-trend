@@ -9,12 +9,14 @@ exports.byIP = (ip) => {
   return request.get(url)
     .set('Authorization', `APPCODE ${config.ipAPPCode}`)
     .set('Accept', 'application/json')
-    .query('ip', ip)
+    .query({
+      ip,
+    })
     .then((res) => {
       if (res.body.code !== 0) {
         throw errors.get(7);
       }
-      return _.pick(res.body, ['country', 'region', 'city', 'isp']);
+      return _.pick(res.body.data, ['country', 'region', 'city', 'isp']);
     });
 };
 

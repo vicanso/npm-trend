@@ -322,9 +322,37 @@ starsWrapperCss()
           &.active
             color $COLOR_DARK_BLUE
 
+scoreWrapperCss()
+  .score-wrapper
+    float right
+    .score
+      position relative
+      width 20px
+      height 20px
+      float left
+      font-weight 700
+      cursor default
+      margin-right 5px
+      &:last-child
+        margin-right 0
+      path
+        transition stroke .2s linear
+        stroke $COLOR_LIGHT_GRAY 
+        &.percent
+          stroke $COLOR_BLUE 
+          stroke-linecap round
+      .name
+        color $COLOR_DARK
+        position absolute
+        top 50%
+        left 50%
+        transform translate(-50%,-50%)
+        font-size 9px
+        margin 2px 0 0 0
 .home-view
   padding-bottom 40px
   headerWrapperCss()
+  scoreWrapperCss()
   filterWrapperCss()
   .modules-count-wrapper
     background-color $COLOR_LIGHT_GRAY

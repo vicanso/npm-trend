@@ -305,9 +305,9 @@ exports.updateMoudlesDependeds = async (list) => {
  * @param {Object} condition
  * @returns
  */
-exports.query = (condition) => {
+exports.query = (...args) => {
   const NPM = Models.get('Npm');
-  return NPM.find(condition);
+  return NPM.find(...args);
 };
 
 

@@ -1,5 +1,26 @@
 extends ./layout
 
+mixin Score(scores)
+  .score-wrapper
+    - var strokeLength = 289.027;
+    each name in ['maintenance', 'popularity', 'quality', 'final']
+      - var score = scores[name]
+      - var offset = (1 - score) * strokeLength;
+      .score(title=`${name}:${_.round(score * 100, 2)}%`)
+        svg(viewBox='0 0 100 100')
+          path(
+            d='M 50,50 m 0,-46 a 46,46 0 1 1 0,92 a 46,46 0 1 1 0,-92'
+            stroke-width='8'
+            fill-opacity='0'
+          )
+          path.percent(
+            d='M 50,50 m 0,-46 a 46,46 0 1 1 0,92 a 46,46 0 1 1 0,-92'
+            stroke-width='8'
+            fill-opacity='0'
+            style=`stroke-dasharray: ${strokeLength}px, ${strokeLength}px; stroke-dashoffset: ${offset}px;`
+          )
+        .name.font14 #{name.charAt(0).toUpperCase()}
+
 mixin Keywords(keywords)
   .keywords
     +FontIcon('fa-tags mright5')
@@ -28,6 +49,8 @@ mixin Modules(items)
     each item in items
       li
         h4
+          if item.scores
+            +Score(item.scores)
           a.module(href=`https://npmjs.org/package/${item.name}`) #{item.name}
           span (#{item.latest.version})
           span.tips(data-content=item.about)
@@ -49,10 +72,10 @@ mixin Modules(items)
           if author
             +FontIcon('fa-user-circle-o mright5') 
             if currentAuthor === author
-              a.author.selected(href=URL('/')) #{author}
+              a.author.selected.mright10(href=URL('/')) #{author}
             else
-              a.author(href=URL(`/?author=${encodeURIComponent(author)}`)) #{author}
-          span.mleft10 Published #{moment(item.latest.time).fromNow()} 
+              a.author.mright10(href=URL(`/?author=${encodeURIComponent(author)}`)) #{author}
+          span Published #{moment(item.latest.time).fromNow()} 
 
 mixin HeaderView()
   header.header-wrapper
