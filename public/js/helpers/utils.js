@@ -6,8 +6,13 @@ const location = globals.get('location');
 
 function stringify(params) {
   const keys = _.keys(params).sort();
-  return _.map(keys, key => `${key}=${encodeURIComponent(params[key])}`)
-    .join('&');
+  const arr = [];
+  _.forEach(keys, (key) => {
+    if (!_.isNil(params[key])) {
+      arr.push(`${key}=${encodeURIComponent(params[key])}`);
+    }
+  });
+  return arr.join('&');
 }
 
 export function getQueryParam(key) {
@@ -36,7 +41,11 @@ export function getUrl(params, extend = true) {
   if (_.isEmpty(currentParams)) {
     return baseUrl;
   }
-  return `${baseUrl}?${stringify(currentParams)}`;
+  const qsStr = stringify(currentParams);
+  if (!qsStr) {
+    return baseUrl;
+  }
+  return `${baseUrl}?${qsStr}`;
 }
 
 export function getErrorMessage(err) {

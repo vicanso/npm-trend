@@ -231,6 +231,9 @@ exports.updateModulesDownloads = async () => {
   const arr = _.range(0, _.ceil(count / offset));
   const update = async (start) => {
     const docs = await NPM.find({}, 'name')
+      .sort({
+        'downloads.week': -1,
+      })
       .skip(start * offset)
       .limit(offset);
     const doDownloadUpdate = name => exports.updateDownloads(name)

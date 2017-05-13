@@ -251,7 +251,7 @@ function getView(url, selector) {
 function initFilterHandle() {
   const setFilterSelected = (wrapper) => {
     const filterKeys = {
-      sort: getQueryParam('sort') || 'downloads.latest',
+      sort: getQueryParam('sort') || '',
       updated: getQueryParam('updated') || '',
       created: getQueryParam('created') || '',
     };
@@ -284,19 +284,21 @@ function initFilterHandle() {
   $('.functions .filter', viewWrapper).click(toggleFilter);
   $('.filter-wrapper', viewWrapper).on('click', 'a', (e) => {
     const target = $(e.currentTarget);
-    if (target.hasClass('selected')) {
-      return;
-    }
     let url = '';
     if (target.hasClass('reset')) {
       url = getUrl({}, false);
     } else {
       const parent = target.closest('ul');
-      parent.find('a.selected').removeClass('selected');
-      target.addClass('selected');
       const type = parent.data('type');
       const params = {};
-      params[type] = target.data('key');
+      if (target.hasClass('selected')) {
+        target.removeClass('selected');
+        params[type] = null;
+      } else {
+        parent.find('a.selected').removeClass('selected');
+        target.addClass('selected');
+        params[type] = target.data('key');
+      }
       url = getUrl(params);
     }
     locationService.push(url);

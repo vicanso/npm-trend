@@ -68,14 +68,17 @@ function initScroll() {
   anchor.appendTo('body');
   const doc = $(globals.get('document'));
   let isHidden = true;
+  const footer = $('.footer-wrapper');
   doc.on('scroll', _.throttle(() => {
     if (doc.scrollTop() > 500) {
       if (isHidden) {
         anchor.removeClass('hidden');
+        footer.addClass('hidden');
       }
       isHidden = false;
     } else if (!isHidden) {
       anchor.addClass('hidden');
+      footer.removeClass('hidden');
       isHidden = true;
     }
   }, 500));
