@@ -44,9 +44,14 @@ async function updatePeriodCounts(name) {
       }
     });
   });
-  const lastCount = _.last(docs);
-  result.downloads.latest = lastCount.downloads || 0;
-  result.dependeds.latest = lastCount.dependeds || 0;
+  _.forEach(docs.reverse(), (doc) => {
+    if (_.isUndefined(result.downloads.latest)) {
+      result.downloads.latest = doc.downloads;
+    }
+    if (_.isUndefined(result.dependeds.latest)) {
+      result.dependeds.latest = doc.dependeds;
+    }
+  });
   const doc = await NPM.findOne({
     name,
   });
