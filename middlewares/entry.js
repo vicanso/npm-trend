@@ -5,6 +5,7 @@
 
 const _ = require('lodash');
 const Timing = require('supertiming');
+const ms = require('ms');
 
 const globals = localRequire('helpers/globals');
 
@@ -39,7 +40,13 @@ module.exports = (processName, appUrlPrefix) => (ctx, next) => {
     /* eslint no-param-reassign:0 */
     ctx.path = currentPath.substring(appUrlPrefix.length) || '/';
   }
-  ctx.setCache = ttl => ctx.set('Cache-Control', `public, max-age=${ttl}`);
+  ctx.setCache = (ttl) => {
+    let seconds = ttl;
+    if (seconds) {
+      seconds = _.ceil(ms(ttl) / 1000);
+    }
+    ctx.set('Cache-Control', `public, max-age=${seconds}`);
+  };
   const processList = (ctx.get('Via') || '').split(',');
   processList.push(processName);
   ctx.set('Via', _.compact(processList).join(','));

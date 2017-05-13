@@ -57,7 +57,7 @@ exports.count = async (ctx) => {
     conditions.name = new RegExp(options.q);
   }
   const count = await npmService.count(conditions);
-  ctx.setCache(600);
+  ctx.setCache('10m');
   ctx.body = {
     count,
   };
@@ -74,6 +74,6 @@ exports.getDownloads = async (ctx) => {
   const begin = moment(params.begin).format(formatStr);
   const end = moment(params.end).format(formatStr);
   const data = await npmService.getDownloads(name, begin, end);
-  ctx.setCache(600);
+  ctx.setCache('10m');
   ctx.body = data;
 };

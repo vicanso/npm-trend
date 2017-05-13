@@ -38,7 +38,7 @@ async function getVersion() {
  */
 exports.version = async (ctx) => {
   const version = await getVersion();
-  ctx.setCache(600);
+  ctx.setCache('10m');
   /* eslint no-param-reassign:0 */
   ctx.body = version;
 };

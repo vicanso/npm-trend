@@ -115,7 +115,7 @@ module.exports = async (ctx) => {
     `;
     return module;
   });
-  ctx.setCache(600);
+  ctx.setCache('10m');
   const dateFilters = {
     '-1d': 'Last 1 day',
     '-7d': 'Last 7 days',
