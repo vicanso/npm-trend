@@ -97,3 +97,15 @@ exports.randomToken = (length = 6) => {
   }
   return arr.join('');
 };
+
+/**
+ * 生成延时执行的Promise
+ * @param {Number} ms 延时执行时间
+ * @return {Pormise}
+ * @example
+ * const utils = require('./helpers/utils');
+ * utils.delay(1000).then(() => {
+ *   console.info('delay 1000ms');
+ * });
+ */
+exports.delay = ms => new Promise(resolve => setTimeout(resolve, ms));

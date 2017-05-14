@@ -4,6 +4,7 @@ const moment = require('moment');
 
 const Models = localRequire('models');
 const errors = localRequire('helpers/errors');
+const utils = localRequire('helpers/utils');
 
 npmApis.timeout = 10 * 1000;
 
@@ -143,6 +144,7 @@ exports.updateDownloads = async (name) => {
   let start = _.get(downloadInfo, 'date', doc.createdTime.substring(0, 10));
   const end = moment().add(-1, 'day').format(formatStr);
   if (start >= end) {
+    await updatePeriodCounts(name);
     return;
   }
   start = moment(start, formatStr).add(-1, 'day').format(formatStr);
@@ -235,12 +237,26 @@ exports.updateModulesDownloads = async () => {
   const offset = 500;
   const arr = _.range(0, _.ceil(count / offset));
   const update = async (start) => {
-    const docs = await NPM.find({}, 'name')
-      .sort({
-        'downloads.week': -1,
-      })
-      .skip(start * offset)
-      .limit(offset);
+    const getDocs = async () => {
+      const skip = start * offset;
+      let result;
+      try {
+        result = await NPM.find({}, 'name')
+          .sort({
+            'downloads.week': -1,
+          })
+          .skip(skip)
+          .limit(offset);
+      } catch (err) {
+        console.error(`Get npms fail, ${err.message}`);
+      }
+      return result;
+    };
+    let docs = await getDocs();
+    if (!docs) {
+      await utils.delay(1000);
+      docs = await getDocs() || [];
+    }
     const doDownloadUpdate = name => exports.updateDownloads(name)
       .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
     await Promise.map(docs, item => doDownloadUpdate(item.name), {
