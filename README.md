@@ -10,7 +10,7 @@ When I started to use `node.js`, I found the module from blog or `github trendin
 
 - Created in 90 days and sort by downloads(latest)
 
-![](screen-shoot/created-90d-donwloads-latest.jpeg)
+![](screen-shoot/created-90d-downloads-latest.jpeg)
 
 - Module compare(lodash vs undersocre)
 
