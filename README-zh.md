@@ -15,7 +15,19 @@
 
 - 最近3个月内有更新，按下载排行（主要避免一些模块几年不更新，但是下载量很高）
 
+![](screen-shoot/updated-90d-donwloads-latest.jpeg)
+
 - 最近3个月内创建，按下载排行（查找一些较新的模块，但感觉有些模块有虚假下载量）
+
+![](screen-shoot/created-90d-donwloads-latest.jpeg)
+
+- 模块比较(lodash vs undersocre)
+
+![](screen-shoot/lodash-underscore.jpeg)
+
+- 关注模块（在该模块有更新时能及时得知）
+
+![](screen-shoot/stars.jpeg)
 
 后续我会继续收集各类的数据，提供更多的筛选方式给大家使用
 
