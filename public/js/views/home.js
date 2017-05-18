@@ -306,12 +306,12 @@ function initFilterHandle() {
   });
 }
 
-
 const getMoreOptions = {
   isGettingMore: false,
   offset: 0,
   pageSize: 20,
   max: 0,
+  end: false,
 };
 // get more modules and append to the bottom
 function getMore() {
@@ -344,7 +344,12 @@ function getMore() {
       const list = $(viewData.content);
       item.append(list);
       addStarStatus(list);
+      const newUrl = getUrl({
+        offset: getMoreOptions.offset,
+      });
+      locationService.push(newUrl, '', false);
       if (getMoreOptions.offset + pageSize > max) {
+        getMoreOptions.end = true;
         item.append(`
           <div style="margin:20px;text-align:center">
             <i class="fa fa-stop mright5" aria-hidden="true"></i>
@@ -365,10 +370,13 @@ function initScrollHandle() {
   const windowHeight = $(globals.get('self')).height();
   const offset = 200;
   doc.on('scroll', _.debounce(() => {
+    if (getMoreOptions.end || getMoreOptions.isGettingMore) {
+      return;
+    }
     if (doc.scrollTop() + windowHeight + offset > $('body').height()) {
       getMore();
     }
-  }));
+  }, 500));
 }
 
 // init the keyword, author fitler handle
@@ -515,7 +523,7 @@ locationService.subscribe(() => {
     destroy();
     return;
   }
-  getMoreOptions.offset = 0;
+  getMoreOptions.offset = +(getQueryParam('offset') || 0);
   if (data.prevPath !== data.path) {
     viewWrapper = $('.home-view');
     initAboutTipHandle();

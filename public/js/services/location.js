@@ -55,14 +55,18 @@ export function getCurrentUrl() {
   return currentUrl;
 }
 
-export function push(url, title = '') {
+export function push(url, title = '', emit = true) {
   history.pushState(null, title, url);
-  emitChange(url);
+  if (emit) {
+    emitChange(url);
+  }
 }
 
-export function relace(url, title = '') {
+export function relace(url, title = '', emit = true) {
   history.replaceState(null, title, url);
-  emitChange(url);
+  if (emit) {
+    emitChange(url);
+  }
 }
 
 _.defer(() => emitChange(globals.get('location.href')));
