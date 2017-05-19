@@ -1,6 +1,6 @@
 # npm-trend 
 
-When I started to use `node.js`, I found the module from blog or `github trending`。The `npmjs.org` is just for searching module's latest version, I had read the top of `Most depended-upon packages` many times, but the modules are basically no change. I wanna find some more useful modules in `npmjs.org`, but there isn't enough filter way for me. Finally, I decided to sync all modules and created `npmtrend.com`
+When I started to use `node.js`, I found the module from blog or `github trending`. The `npmjs.org` is just for searching module's latest version, I had read the top of `Most depended-upon packages` many times, but the modules are basically no change. I wanna find some more useful modules in `npmjs.org`, but there isn't enough filter way for me. Finally, I decided to sync all modules and created `npmtrend.com`
 
 ## Sort
 
@@ -21,7 +21,7 @@ When I started to use `node.js`, I found the module from blog or `github trendin
 ![](screen-shoot/stars.jpeg)
 
 
-I will collection more data for support useful filter
+I will collect more data for support useful filter
 
 The score of module if from `npms.io`
 

@@ -19,7 +19,7 @@ exports.name = process.env.NAME || 'unknown';
 exports.influx = process.env.INFLUX;
 
 // app url prefix for all request
-exports.appUrlPrefix = '';
+exports.appUrlPrefix = process.env.APP_URL_PREFIX || '';
 
 exports.staticOptions = {
   urlPrefix: '/static',
