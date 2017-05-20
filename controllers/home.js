@@ -46,7 +46,7 @@ module.exports = async (ctx) => {
     updated: Joi.string()
       .valid('-1d', '-7d', '-30d', '-90d', '-180d', '-360d'),
   });
-  const sort = {};
+  let sort = {};
   sort[options.sort] = options.sortBy === 'desc' ? -1 : 1;
   const conditions = {};
   const getTime = (value) => {
@@ -73,6 +73,8 @@ module.exports = async (ctx) => {
   }
   if (options.q) {
     conditions.name = new RegExp(options.q);
+    options.limit = 100;
+    sort = null;
   }
   const queryEnd = timing.start('mongodbQuery');
   const result = await npmService.query(conditions)
