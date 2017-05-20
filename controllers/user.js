@@ -5,6 +5,7 @@
 const Joi = require('joi');
 const _ = require('lodash');
 const request = require('superagent');
+const urlJoin = require('url-join');
 
 const errors = localRequire('helpers/errors');
 const userService = localRequire('services/user');
@@ -121,7 +122,7 @@ exports.loginCallback = async (ctx) => {
     token: randomToken(),
     accessToken,
     name: userInfos.name,
-    avatar: userInfos.avatar_url,
+    avatar: `${userInfos.avatar_url}&s=48`,
     account: userInfos.login,
     type: params.type,
   };
@@ -140,7 +141,7 @@ exports.loginCallback = async (ctx) => {
     }, data);
     influx.write('login', fields);
   }).catch(err => console.error(`Get location by ip(${ip}) fail, ${err.message}`));
-  ctx.redirect(params['redirect-uri']);
+  ctx.redirect(urlJoin(config.appUrlPrefix, params['redirect-uri']));
 };
 
 exports.star = async (ctx) => {
@@ -163,6 +164,6 @@ exports.star = async (ctx) => {
 
 exports.getStars = async (ctx) => {
   const user = ctx.session.user;
-  ctx.body = await userService.getStars(user
-  .account, user.type);
+  ctx.body = await userService
+    .getStars(user.account, user.type);
 };

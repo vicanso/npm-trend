@@ -1,4 +1,5 @@
 module.exports = [
+  ['GET', '/favicon.ico', ' [c.system.favicon]'],
   ['GET', '/api/sys/level', '[m.noCache & c.system.level]'],
   ['POST', '/api/sys/level', '[m.auth.admin & c.system.setLevel]'],
   ['POST', '/api/sys/exit', '[m.auth.admin & c.system.exit]'],

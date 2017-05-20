@@ -42,7 +42,7 @@ module.exports = (processName, appUrlPrefix) => (ctx, next) => {
   }
   ctx.setCache = (ttl) => {
     let seconds = ttl;
-    if (seconds) {
+    if (_.isString(seconds)) {
       seconds = _.ceil(ms(ttl) / 1000);
     }
     ctx.set('Cache-Control', `public, max-age=${seconds}`);

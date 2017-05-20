@@ -19,6 +19,7 @@ const _ = require('lodash');
  * curl 'http://host/login'
  */
 module.exports = async (ctx) => {
+  const timing = ctx.state.timing;
   const sorts = {
     'downloads.latest': 'Downloads(latest day)',
     'downloads.week': 'Downloads(7 days)',
@@ -73,11 +74,13 @@ module.exports = async (ctx) => {
   if (options.q) {
     conditions.name = new RegExp(options.q);
   }
+  const queryEnd = timing.start('mongodbQuery');
   const result = await npmService.query(conditions)
     .select('-readme -versions -maintainers')
     .sort(sort)
     .skip(options.offset)
     .limit(options.limit);
+  queryEnd();
   const docs = [];
   _.forEach(result, (doc) => {
     const item = doc.toJSON();

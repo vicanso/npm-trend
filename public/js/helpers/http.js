@@ -189,9 +189,10 @@ use(stats());
 const appUrlPrefix = globals.get('CONFIG.appUrlPrefix');
 if (appUrlPrefix) {
   use((req) => {
-    if (req.url.charAt(0) === '/') {
+    const url = req.url;
+    if (url.charAt(0) === '/' && url.indexOf(appUrlPrefix) !== 0) {
       /* eslint no-param-reassign:0 */
-      req.url = appUrlPrefix + req.url;
+      req.url = appUrlPrefix + url;
     }
     return req;
   });

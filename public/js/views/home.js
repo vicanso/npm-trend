@@ -150,7 +150,6 @@ function initUserHandle(wrapper) {
     userService[fn](name)
       .then(() => {
         delete staring[name];
-        target.toggleClass('selected');
       })
       .catch((err) => {
         delete staring[name];
@@ -519,7 +518,11 @@ function destroy() {
 
 locationService.subscribe(() => {
   const data = locationService.getState();
-  if (data.path !== VIEW_HOME) {
+  let currentPath = data.path;
+  if (currentPath[currentPath.length - 1] !== '/') {
+    currentPath += '/';
+  }
+  if (currentPath !== VIEW_HOME) {
     destroy();
     return;
   }

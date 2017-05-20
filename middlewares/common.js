@@ -156,6 +156,9 @@ exports.htmlSelector = () => (ctx, next) => {
     return next();
   }
   return next().then(() => {
+    if (!_.isString(ctx.body)) {
+      return;
+    }
     const $ = cheerio.load(ctx.body);
     ctx.body = {
       title: $('head title').html(),

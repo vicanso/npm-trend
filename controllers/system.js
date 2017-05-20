@@ -139,3 +139,10 @@ exports.level = (ctx) => {
     level: globals.get('level'),
   };
 };
+
+exports.favicon = (ctx) => {
+  ctx.setCache('1h');
+  const file = path.join(__dirname, '../public/img/favicon.ico');
+  ctx.set('Content-Type', 'image/x-icon');
+  ctx.body = fs.createReadStream(file);
+};
