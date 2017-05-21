@@ -59,10 +59,10 @@ async function updateDependeds() {
 }
 
 if (process.env.ENABLE_JOB) {
-  schedule.scheduleJob('00 00 * * *', updateAllModules);
+  schedule.scheduleJob('00 21 * * *', updateAllModules);
   schedule.scheduleJob('00 04 * * *', updateYesterdayMoudles);
   schedule.scheduleJob('00 05 * * *', updateDependeds);
-  _.forEach([15], (value) => {
+  _.forEach([17], (value) => {
     const hours = value < 10 ? `0${value}` : `${value}`;
     schedule.scheduleJob(`00 ${hours} * * *`, updateModulesDownloads);
   });
