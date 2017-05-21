@@ -2,21 +2,25 @@ const request = require('superagent');
 const _ = require('lodash');
 
 const errors = localRequire('helpers/errors');
-const config = localRequire('config');
 
 exports.byIP = (ip) => {
-  const url = 'https://dm-81.data.aliyun.com/rest/160601/ip/getIpInfo.json';
+  const url = 'http://ip.taobao.com/service/getIpInfo.php';
   return request.get(url)
-    .set('Authorization', `APPCODE ${config.ipAPPCode}`)
     .set('Accept', 'application/json')
     .query({
       ip,
     })
     .then((res) => {
-      if (res.body.code !== 0) {
+      try {
+        const info = JSON.parse(res.text);
+        if (info.code !== 0) {
+          throw errors.get(7);
+        }
+        return _.pick(info.data, ['country', 'region', 'city', 'isp']);
+      } catch (err) {
+        console.error(`parse ip info fail, ${err.message}`);
         throw errors.get(7);
       }
-      return _.pick(res.body.data, ['country', 'region', 'city', 'isp']);
     });
 };
 
