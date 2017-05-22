@@ -69,11 +69,31 @@ exports.getDownloads = async (ctx) => {
     begin: Joi.date().min(moment().add(-1, 'year').format(formatStr)),
     end: Joi.date().max(moment().format(formatStr))
       .default(moment().add(-1, 'day').format(formatStr)),
+    interval: Joi.number().integer().min(1).default(1),
   });
+  console.dir(params);
   const name = ctx.params.name;
+  const interval = params.interval;
   const begin = moment(params.begin).format(formatStr);
   const end = moment(params.end).format(formatStr);
   const data = await npmService.getDownloads(name, begin, end);
+  if (interval > 1) {
+    const result = [];
+    let count = 0;
+    const max = data.length;
+    _.forEach(data, (item, index) => {
+      count += item.count;
+      if (index === max - 1 || (index + 1) % interval === 0) {
+        result.push({
+          count,
+          date: item.date,
+        });
+        count = 0;
+      }
+    });
+    ctx.body = result;
+  } else {
+    ctx.body = data;
+  }
   ctx.setCache('10m');
-  ctx.body = data;
 };

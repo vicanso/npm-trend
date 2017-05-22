@@ -15,11 +15,12 @@ export function count(query) {
     .then(res => res.body.count);
 }
 
-export function getDownloads(name, days) {
+export function getDownloads(name, days, interval = 1) {
   const begin = moment().add(-days, 'day').format('YYYY-MM-DD');
   const url = NPM_DOWNLOADS.replace(':name', name);
   return http.get(url, {
     begin,
+    interval,
   }).then(res => res.body);
 }
 

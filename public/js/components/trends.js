@@ -7,13 +7,14 @@ import {
 
 import * as npmService from '../services/npm';
 
+const DAY_LIST = [7, 14, 28, 91, 182, 364];
 
 export default class Trends {
   constructor(target, modules) {
     this.target = $('<div class="trends-chart" />').appendTo(target);
     this.modules = modules;
     this.options = {
-      days: 30,
+      days: DAY_LIST[2],
     };
     this.initEvent();
   }
@@ -35,7 +36,7 @@ export default class Trends {
     } = this;
     const currentDays = this.options.days;
     target.html('<svg />');
-    const daysList = _.map([7, 14, 30, 90, 180], (days) => {
+    const daysList = _.map(DAY_LIST, (days) => {
       let cls = '';
       if (currentDays === days) {
         cls = 'selected';
@@ -82,7 +83,11 @@ export default class Trends {
       </div>
     `;
     target.html(loadingHtml);
-    const fns = _.map(modules, module => npmService.getDownloads(module, days));
+    let interval = 1;
+    if (days > 100) {
+      interval = 7;
+    }
+    const fns = _.map(modules, module => npmService.getDownloads(module, days, interval));
     Promise.all(fns)
       .then(data => this.showChart(data))
       .catch(() => target.find('.loading').text('Loading fail'));
