@@ -87,7 +87,7 @@ const schemas = {
     fields: {
       use: 'integer',
       ip: 'string',
-      token: 'string',
+      user: 'string',
       module: 'string',
     },
     tags: {
