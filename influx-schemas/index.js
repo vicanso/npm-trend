@@ -139,10 +139,13 @@ const schemas = {
   login: {
     fields: {
       ip: 'string',
-      country: 'string',
-      region: 'string',
-      city: 'string',
-      isp: 'string',
+      account: 'string',
+    },
+    tags: {
+      country: '*',
+      region: '*',
+      city: '*',
+      isp: '*',
     },
   },
 };

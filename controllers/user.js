@@ -4,7 +4,6 @@
  */
 const Joi = require('joi');
 const _ = require('lodash');
-const request = require('superagent');
 const urlJoin = require('url-join');
 
 const errors = localRequire('helpers/errors');
@@ -14,6 +13,7 @@ const {
   randomToken,
 } = localRequire('helpers/utils');
 const influx = localRequire('helpers/influx');
+const request = localRequire('helpers/request');
 const locationService = localRequire('services/location');
 
 /**
@@ -136,10 +136,11 @@ exports.loginCallback = async (ctx) => {
     ip,
   });
   locationService.byIP(ip).then((data) => {
-    const fields = _.extend({
+    const fields = {
       ip,
-    }, data);
-    influx.write('login', fields);
+      account: user.account,
+    };
+    influx.write('login', fields, data);
   }).catch(err => console.error(`Get location by ip(${ip}) fail, ${err.message}`));
   ctx.redirect(urlJoin(config.appUrlPrefix, params['redirect-uri']));
 };

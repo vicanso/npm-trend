@@ -63,7 +63,6 @@ export default class Trends {
       return series;
     });
     const chart = new Line(target.find('svg').get(0));
-    chart.set('curve', ['curveCatmullRom.alpha', 0.5]);
     chart.set('yAxis.width', 40);
     chart.set('xAxis.categories', categories);
     chart.set('title.text', 'The trend of downloads');

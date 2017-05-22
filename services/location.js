@@ -1,7 +1,7 @@
-const request = require('superagent');
 const _ = require('lodash');
 
 const errors = localRequire('helpers/errors');
+const request = localRequire('helpers/request');
 
 exports.byIP = (ip) => {
   const url = 'http://ip.taobao.com/service/getIpInfo.php';
