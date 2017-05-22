@@ -11,6 +11,7 @@ module.exports = {
       'jquery',
       'moment',
       'redux',
+      'store',
       'superagent',
       'url-parse',
     ],
