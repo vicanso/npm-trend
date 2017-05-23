@@ -147,7 +147,6 @@ exports.updateDownloads = async (name) => {
     await updatePeriodCounts(name);
     return;
   }
-  start = moment(start, formatStr).add(-1, 'day').format(formatStr);
   // update download in one year
   const oneYearAgo = moment().add(-1, 'year').format(formatStr);
   if (start < oneYearAgo) {

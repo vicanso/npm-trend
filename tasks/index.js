@@ -1,5 +1,4 @@
 const schedule = require('node-schedule');
-const _ = require('lodash');
 const npmApis = require('npm-apis');
 
 const npmService = localRequire('services/npm');
@@ -62,14 +61,10 @@ if (process.env.ENABLE_JOB) {
   schedule.scheduleJob('00 21 * * *', updateAllModules);
   schedule.scheduleJob('00 04 * * *', updateYesterdayMoudles);
   schedule.scheduleJob('00 05 * * *', updateDependeds);
-  _.forEach([17], (value) => {
-    const hours = value < 10 ? `0${value}` : `${value}`;
-    schedule.scheduleJob(`00 ${hours} * * *`, updateModulesDownloads);
-  });
 }
 if (process.env.UPDATE_ALL) {
   updateAllModules();
 }
 if (process.env.UPDATE_DOWNLOADS) {
-  updateModulesDownloads();
+  schedule.scheduleJob('00 01 * * *', updateModulesDownloads);
 }

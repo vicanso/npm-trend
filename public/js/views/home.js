@@ -404,7 +404,7 @@ function initSearchHandle() {
     }
   });
   viewWrapper.on('click', '.search-component .clear', () => {
-    viewWrapper.find(inputFilter).val('');
+    viewWrapper.find(inputFilter).val('').focus();
   });
 }
 
