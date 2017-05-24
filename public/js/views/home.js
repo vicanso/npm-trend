@@ -289,7 +289,9 @@ function initFilterHandle() {
     } else {
       const parent = target.closest('ul');
       const type = parent.data('type');
-      const params = {};
+      const params = {
+        offset: null,
+      };
       if (target.hasClass('selected')) {
         target.removeClass('selected');
         params[type] = null;

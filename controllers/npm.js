@@ -71,7 +71,6 @@ exports.getDownloads = async (ctx) => {
       .default(moment().add(-1, 'day').format(formatStr)),
     interval: Joi.number().integer().min(1).default(1),
   });
-  console.dir(params);
   const name = ctx.params.name;
   const interval = params.interval;
   const begin = moment(params.begin).format(formatStr);

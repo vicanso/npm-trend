@@ -105,6 +105,7 @@ exports.loginCallback = async (ctx) => {
     'redirect-uri': Joi.string().default('/'),
   });
   let res = await request.post('https://github.com/login/oauth/access_token')
+    .timeout(30 * 1000)
     .set('Accept', 'application/json')
     .send({
       client_id: '04e3e64ca25edf31751e',

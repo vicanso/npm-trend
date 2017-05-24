@@ -24,6 +24,7 @@ function httpStats(req) {
       method: req.method,
       startedAt: Date.now(),
     });
+    // superagent-load-balancer will set the backendServer
     const backendServer = req.backendServer;
     if (backendServer) {
       _.extend(stats, _.pick(backendServer, ['ip', 'port']));
@@ -45,7 +46,8 @@ function httpStats(req) {
 
 function defaultHandle(req) {
   req.timeout(exports.timeout);
-  httpStats(req);
+  req.sortQuery();
+  req.use(httpStats);
 }
 
 _.forEach(['get', 'post', 'put', 'del'], (method) => {

@@ -80,7 +80,8 @@ mixin Modules(items)
 mixin HeaderView()
   header.header-wrapper
     .header-content
-      .logo npm trend 
+      .logo
+        a(href=URL('/')) npm trend 
       .search-box: .search-component
         button.search
           +FontIcon('fa-search')

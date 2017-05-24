@@ -62,9 +62,19 @@ if (process.env.ENABLE_JOB) {
   schedule.scheduleJob('00 04 * * *', updateYesterdayMoudles);
   schedule.scheduleJob('00 05 * * *', updateDependeds);
 }
-if (process.env.UPDATE_ALL) {
-  updateAllModules();
-}
 if (process.env.UPDATE_DOWNLOADS) {
   schedule.scheduleJob('00 01 * * *', updateModulesDownloads);
+}
+if (process.env.DO_NOW) {
+  const doTask = process.env.DO_NOW;
+  switch (doTask) {
+    case 'updateAllModules':
+      updateAllModules();
+      break;
+    case 'updateModulesDownloads':
+      updateModulesDownloads();
+      break;
+    default:
+      break;
+  }
 }
