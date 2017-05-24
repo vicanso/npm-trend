@@ -40,8 +40,6 @@ NODE_ENV=production
 MONGO=mongodb://user:pwd@ip:port/npmtrend
 REDIS=redis://:pwd@ip:port/
 INFLUX=http://user:pwd@ip:port/db
-IP_APP_CODE=ALI_YUN_IP_APP_CODE
-NODE_TLS_REJECT_UNAUTHORIZED="0"
 ```
 
 ## License

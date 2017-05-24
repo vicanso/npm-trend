@@ -19,7 +19,13 @@ module.exports = (port) => {
   app.use(localRequire('middlewares/timeout')({
     timeout: 10 * 1000,
     // 如果query中设置了disableTimeout，则跳过timeout处理
-    pass: ctx => _.has(ctx.query, 'disableTimeout'),
+    pass: (ctx) => {
+      const disableTimeout = _.has(ctx.query, 'disableTimeout');
+      if (disableTimeout) {
+        delete ctx.query.disableTimeout;
+      }
+      return disableTimeout;
+    },
   }));
   // health check
   app.use(localRequire('middlewares/ping')('/ping'));
