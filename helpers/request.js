@@ -50,7 +50,7 @@ function defaultHandle(req) {
   req.use(httpStats);
 }
 
-_.forEach(['get', 'post', 'put', 'del'], (method) => {
+_.forEach(['get', 'post', 'put', 'del', 'patch'], (method) => {
   exports[method] = (...args) => {
     const req = request[method](...args);
     defaultHandle(req);

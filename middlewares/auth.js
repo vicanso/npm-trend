@@ -2,8 +2,6 @@
  * @module middlewares/auth
  */
 
-const crypto = require('crypto');
-
 const errors = localRequire('helpers/errors');
 
 /**
@@ -13,9 +11,8 @@ const errors = localRequire('helpers/errors');
  * @return {Function} 返回中间件处理函数
  */
 exports.admin = adminToken => (ctx, next) => {
-  const shasum = crypto.createHash('sha1');
   const token = ctx.get('Auth-Token');
-  if (token && shasum.update(token).digest('hex') === adminToken) {
+  if (token && token === adminToken) {
     return next();
   }
   throw errors.get(1);

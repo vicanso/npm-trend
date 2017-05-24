@@ -96,3 +96,8 @@ exports.getDownloads = async (ctx) => {
   }
   ctx.setCache('10m');
 };
+
+exports.updatePeriodCounts = async (ctx) => {
+  await npmService.updatePeriodCounts(ctx.params.name);
+  ctx.body = null;
+};

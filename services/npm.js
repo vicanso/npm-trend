@@ -3,16 +3,23 @@ const npmApis = require('npm-apis');
 const moment = require('moment');
 
 const Models = localRequire('models');
+const config = localRequire('config');
 const errors = localRequire('helpers/errors');
 const utils = localRequire('helpers/utils');
+const request = localRequire('helpers/request');
 
 npmApis.timeout = 10 * 1000;
 
+function updatePeriodCountsUsingAPI(name) {
+  const url = `http://npmtrend.com/api/modules/${name}/period-counts`;
+  return request.patch(url)
+    .set('Auth-Token', config.adminToken);
+}
 /**
  * Update the counts of module
  * @param {String} name
  */
-async function updatePeriodCounts(name) {
+exports.updatePeriodCounts = async (name) => {
   const NPM = Models.get('Npm');
   const Count = Models.get('Count');
   const docs = await Count.find({
@@ -58,7 +65,7 @@ async function updatePeriodCounts(name) {
   });
   _.forEach(['downloads', 'dependeds'], key => doc.set(key, result[key]));
   await doc.save();
-}
+};
 
 /**
  * Update the information of module
@@ -144,7 +151,7 @@ exports.updateDownloads = async (name) => {
   let start = _.get(downloadInfo, 'date', doc.createdTime.substring(0, 10));
   const end = moment().add(-1, 'day').format(formatStr);
   if (start >= end) {
-    await updatePeriodCounts(name);
+    await updatePeriodCountsUsingAPI(name);
     return;
   }
   // update download in one year
@@ -171,7 +178,7 @@ exports.updateDownloads = async (name) => {
       upsert: true,
     });
   });
-  await updatePeriodCounts(name);
+  await updatePeriodCountsUsingAPI(name);
 };
 
 /**
@@ -304,7 +311,7 @@ async function updateDependeds(data) {
   }, {
     upsert: true,
   });
-  await updatePeriodCounts(name);
+  await updatePeriodCountsUsingAPI(name);
 }
 
 /**

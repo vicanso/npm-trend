@@ -48,8 +48,7 @@ exports.session = {
   key: pkg.name,
   maxAge: 7 * 24 * 3600 * 1000,
 };
-// admin token (jenny)
-exports.adminToken = '6a3f4389a53c889b623e67f385f28ab8e84e5029';
+exports.adminToken = process.env.ADMIN_TOKEN;
 // etcd server address http://192.168.99.100:2379/v2
 exports.etcd = process.env.ETCD;
 // application binding ip address
