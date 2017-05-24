@@ -1,6 +1,7 @@
 const schedule = require('node-schedule');
 const npmApis = require('npm-apis');
 
+const request = localRequire('helpers/request');
 const npmService = localRequire('services/npm');
 localRequire('tasks/performance')(10 * 1000);
 localRequire('tasks/backend')(300 * 1000);
@@ -38,6 +39,7 @@ async function updateYesterdayMoudles() {
 
 async function updateModulesDownloads() {
   try {
+    request.disable('stats');
     console.info('start to update modules downloads');
     await npmService.updateModulesDownloads();
     console.info('update modules downloads success');

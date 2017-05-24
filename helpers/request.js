@@ -2,7 +2,19 @@ const request = require('superagent');
 const _ = require('lodash');
 const stringify = require('simple-stringify');
 
+const plugin = {
+  stats: true,
+};
+
 exports.timeout = 5 * 1000;
+
+exports.disable = (category) => {
+  plugin[category] = false;
+};
+
+exports.enable = (category) => {
+  plugin[category] = true;
+};
 
 function httpStats(req) {
   const stats = {};
@@ -47,7 +59,9 @@ function httpStats(req) {
 function defaultHandle(req) {
   req.timeout(exports.timeout);
   req.sortQuery();
-  req.use(httpStats);
+  if (plugin.stats) {
+    req.use(httpStats);
+  }
 }
 
 _.forEach(['get', 'post', 'put', 'del', 'patch'], (method) => {
