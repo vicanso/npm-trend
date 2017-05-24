@@ -62,4 +62,5 @@ exports.redisUri = process.env.REDIS || 'redis://127.0.0.1/';
 
 exports.udpLog = process.env.UDP_LOG;
 
-exports.ipAPPCode = process.env.IP_APP_CODE;
+exports.apiUrl = process.env.API_URL;
+

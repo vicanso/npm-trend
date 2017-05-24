@@ -11,7 +11,7 @@ const request = localRequire('helpers/request');
 npmApis.timeout = 10 * 1000;
 
 function updatePeriodCountsUsingAPI(name) {
-  const url = `http://npmtrend.com/api/modules/${name}/period-counts`;
+  const url = `${config.apiUrl}/api/modules/${name}/period-counts`;
   return request.patch(url)
     .set('Auth-Token', config.adminToken);
 }
