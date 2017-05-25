@@ -254,7 +254,9 @@ exports.updateModulesDownloads = async () => {
       console.error(`update ${name} downloads fail, ${err.message}`);
     } finally {
       count += 1;
-      console.info(`update ${count} module's downloads`);
+      if (count % 100 === 0) {
+        console.info(`update ${count} module's downloads`);
+      }
     }
   };
 
