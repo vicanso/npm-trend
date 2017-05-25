@@ -244,7 +244,11 @@ exports.updateModules = async (names, forceUpdate = false) => {
  */
 exports.updateModulesDownloads = async () => {
   const NPM = Models.get('Npm');
-  const cursor = NPM.find({}, 'name').cursor();
+  const cursor = NPM.find({}, 'name')
+    .sort({
+      'downloads.week': -1,
+    })
+    .cursor();
   const modules = [];
   let count = 0;
   const doDownloadUpdate = async (name) => {
@@ -259,11 +263,12 @@ exports.updateModulesDownloads = async () => {
       }
     }
   };
-
+  console.info('start to get all module\'s name');
   return new Promise((resolve) => {
     cursor.on('data', (doc) => {
       modules.push(doc.name);
     }).on('end', async () => {
+      console.info('get all module\'s name success');
       await Promise.map(modules, item => doDownloadUpdate(item), {
         concurrency: 5,
       });
