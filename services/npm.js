@@ -5,16 +5,21 @@ const moment = require('moment');
 const Models = localRequire('models');
 const config = localRequire('config');
 const errors = localRequire('helpers/errors');
-const utils = localRequire('helpers/utils');
 const request = localRequire('helpers/request');
 
 npmApis.timeout = 10 * 1000;
 
+/**
+ * Use the function to set update period counts from hk to gz
+ * @param {any} name
+ * @returns
+ */
 function updatePeriodCountsUsingAPI(name) {
   const url = `${config.apiUrl}/api/modules/${name}/period-counts`;
   return request.patch(url)
     .set('Auth-Token', config.adminToken);
 }
+
 /**
  * Update the counts of module
  * @param {String} name
@@ -60,11 +65,11 @@ exports.updatePeriodCounts = async (name) => {
       result.dependeds.latest = doc.dependeds;
     }
   });
-  const doc = await NPM.findOne({
+  result.downloads.latest = result.downloads.latest || 0;
+  result.dependeds.latest = result.dependeds.latest || 0;
+  await NPM.findOneAndUpdate({
     name,
-  });
-  _.forEach(['downloads', 'dependeds'], key => doc.set(key, result[key]));
-  await doc.save();
+  }, result).select('_id');
 };
 
 /**
@@ -176,7 +181,7 @@ exports.updateDownloads = async (name) => {
       downloads,
     }, {
       upsert: true,
-    });
+    }).select('_id');
   });
   await updatePeriodCountsUsingAPI(name);
 };
@@ -239,40 +244,33 @@ exports.updateModules = async (names, forceUpdate = false) => {
  */
 exports.updateModulesDownloads = async () => {
   const NPM = Models.get('Npm');
-  const count = await NPM.count({});
-  const offset = 500;
-  const arr = _.range(0, _.ceil(count / offset));
-  const update = async (start) => {
-    const getDocs = async () => {
-      const skip = start * offset;
-      let result;
-      try {
-        result = await NPM.find({}, 'name')
-          .sort({
-            'downloads.week': -1,
-          })
-          .skip(skip)
-          .limit(offset);
-      } catch (err) {
-        console.error(`Get npms fail, ${err.message}`);
-      }
-      return result;
-    };
-    let docs = await getDocs();
-    if (!docs) {
-      await utils.delay(1000);
-      docs = await getDocs() || [];
+  const cursor = NPM.find({}, 'name').cursor();
+  const modules = [];
+  let count = 0;
+  const doDownloadUpdate = async (name) => {
+    try {
+      await exports.updateDownloads(name);
+    } catch (err) {
+      console.error(`update ${name} downloads fail, ${err.message}`);
+    } finally {
+      count += 1;
+      console.info(`update ${count} module's downloads`);
     }
-    const doDownloadUpdate = name => exports.updateDownloads(name)
-      .catch(err => console.error(`update ${name} downloads fail, ${err.message}`));
-    await Promise.map(docs, item => doDownloadUpdate(item.name), {
-      concurrency: 5,
-    });
-    console.info(`update downlaods progress ${(start + 1) * offset}/${count}`);
   };
-  await Promise.each(arr, update);
+
+  return new Promise((resolve) => {
+    cursor.on('data', (doc) => {
+      modules.push(doc.name);
+    }).on('end', async () => {
+      await Promise.map(modules, item => doDownloadUpdate(item), {
+        concurrency: 5,
+      });
+      resolve();
+    });
+  });
 };
 
+exports.updateModulesDownloads();
 
 /**
  * Update depened count of the module
@@ -310,7 +308,7 @@ async function updateDependeds(data) {
     dependeds: increase,
   }, {
     upsert: true,
-  });
+  }).select('_id');
   await updatePeriodCountsUsingAPI(name);
 }
 

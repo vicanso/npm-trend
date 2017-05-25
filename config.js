@@ -36,7 +36,7 @@ exports.viewPath = path.join(__dirname, 'views');
 // user track cookie
 exports.trackCookie = '_jt';
 /* eslint max-len:0 */
-exports.httpLogFormat = process.env.HTTP_LOG || ':user :request-id :method :url :status :length :response-time ms ":referrer"';
+exports.httpLogFormat = ':user :request-id :method :url :status :length :response-time ms ":referrer"';
 // http connection limit options
 exports.connectLimitOptions = {
   mid: 100,
@@ -64,3 +64,4 @@ exports.udpLog = process.env.UDP_LOG;
 
 exports.apiUrl = process.env.API_URL;
 
+exports.httpLogEnabled = process.env.HTTP_LOG !== '0';

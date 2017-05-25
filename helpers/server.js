@@ -34,7 +34,7 @@ module.exports = (port) => {
   /* istanbul ignore if */
   if (config.env === 'development') {
     app.use(koaLog('dev'));
-  } else if (config.httpLogFormat) {
+  } else if (config.httpLogEnabled) {
     /* istanbul ignore next */
     koaLog.morgan.token('request-id', ctx => ctx.get('X-Request-Id') || 'unknown');
     koaLog.morgan.token('user', ctx => ctx.get('X-User-Token'));
