@@ -245,9 +245,6 @@ exports.updateModules = async (names, forceUpdate = false) => {
 exports.updateModulesDownloads = async () => {
   const NPM = Models.get('Npm');
   const cursor = NPM.find({}, 'name')
-    .sort({
-      'downloads.week': -1,
-    })
     .cursor();
   const modules = [];
   let count = 0;
