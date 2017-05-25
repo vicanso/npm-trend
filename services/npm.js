@@ -270,8 +270,6 @@ exports.updateModulesDownloads = async () => {
   });
 };
 
-exports.updateModulesDownloads();
-
 /**
  * Update depened count of the module
  * @param {Object} data
