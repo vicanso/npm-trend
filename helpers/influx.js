@@ -6,6 +6,7 @@
 
 const Influx = require('influxdb-nodejs');
 const _ = require('lodash');
+const stringify = require('simple-stringify');
 
 const config = localRequire('config');
 const utils = localRequire('helpers/utils');
@@ -42,6 +43,13 @@ if (client) {
     }
     debounceFlush();
   });
+
+  const invalidLog = (data) => {
+    const message = stringify.json(data, 3);
+    console.error(`influxdb schema fail, ${message}`);
+  };
+  client.on('invalid-fields', invalidLog);
+  client.on('invalid-tags', invalidLog);
 }
 
 /**

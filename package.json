@@ -43,7 +43,7 @@
     "dnscache": "^1.0.1",
     "etcd-register": "1.0.0",
     "http-errors": "^1.5.1",
-    "influxdb-nodejs": "^2.6.0",
+    "influxdb-nodejs": "^2.7.2",
     "ioredis": "^2.5.0",
     "joi": "^10.2.2",
     "jquery": "^3.2.1",
