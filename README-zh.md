@@ -1,6 +1,6 @@
 # npm-trend
 
-从我开始接触`node.js`以来，最开始选择`module`都是通过别人推荐的文章或者去`github`中的`trending`中刚好发现好用的模块。对于`npmjs.org`仅能说一直只当它来查询一下模块有没有更新，它的`Most depended-upon packages`(前面部分）已经翻过不少次，但是一直前面的模块都是已经了解过的，一直没有想到好的方式来筛选一下`module`，自己无聊的时候不知道怎么打发，所以决定自己将`npmjs.org`的模块同步，自己做个筛选的网站(http://npmtrend.com/)。
+从我开始接触`node.js`以来，最开始选择`module`都是通过别人推荐的文章或者去`github`中的`trending`中刚好发现好用的模块。对于`npmjs.org`仅能说一直只当它来查询一下模块有没有更新，它的`Most depended-upon packages`(前面部分）已经翻过不少次，但是一直前面的模块都是已经了解过的，一直没有想到好的方式来筛选一下`module`，自己无聊的时候不知道怎么打发，所以决定自己将`npmjs.org`的模块同步，自己做个筛选的网站[http://npmtrend.com/](http://npmtrend.com/)
 
 ## 筛选
 
