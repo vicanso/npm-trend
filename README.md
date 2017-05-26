@@ -12,6 +12,14 @@ When I started to use `node.js`, I found the module from blog or `github trendin
 
 ![](screen-shoot/created-90d-downloads-latest.jpeg)
 
+- Search by keyword
+
+![](screen-shoot/search-by-keyword.jpeg)
+
+- Search by author
+ 
+![](screen-shoot/search-by-author.jpeg)
+
 - Module compare(lodash vs undersocre)
 
 ![](screen-shoot/lodash-underscore.jpeg)
