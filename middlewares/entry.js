@@ -40,12 +40,20 @@ module.exports = (processName, appUrlPrefix) => (ctx, next) => {
     /* eslint no-param-reassign:0 */
     ctx.path = currentPath.substring(appUrlPrefix.length) || '/';
   }
-  ctx.setCache = (ttl) => {
+  ctx.setCache = (ttl, sMaxAge) => {
     let seconds = ttl;
     if (_.isString(seconds)) {
       seconds = _.ceil(ms(ttl) / 1000);
     }
-    ctx.set('Cache-Control', `public, max-age=${seconds}`);
+    let cacheControl = `public, max-age=${seconds}`;
+    if (sMaxAge) {
+      let sMaxAgeSeconds = sMaxAge;
+      if (_.isString(sMaxAgeSeconds)) {
+        sMaxAgeSeconds = _.ceil(ms(sMaxAgeSeconds) / 1000);
+      }
+      cacheControl += `, s-maxage=${sMaxAgeSeconds}`;
+    }
+    ctx.set('Cache-Control', cacheControl);
   };
   const processList = (ctx.get('Via') || '').split(',');
   processList.push(processName);
