@@ -165,16 +165,17 @@ filterWrapperCss()
 
 modulesWrapperCss()
   .modules-wrapper
-    margin 0 20px
-    max-width 700px
+    margin 0 auto
+    max-width 800px
     ul
-      margin 0
+      margin 0 20px
       padding 0
       list-style none
       li
         margin-bottom 20px
         padding-bottom 20px
         border-bottom $GRAY_BORDER
+        padding 0 10px 10px
       h4
         font-size 20px
         margin 15px 0
@@ -188,14 +189,14 @@ modulesWrapperCss()
           color $COLOR_DARK_BLUE
           font-weight $FONT_BOLD
           cursor pointer
-        .download-trend
+        .download-trend, .compare, .star
           font-size 14px
+          margin-left 10px
+          padding 0 3px
         a.selected
           color $COLOR_RED
       p
         margin 8px 0
-        word-break break-all
-        word-wrap break-word
       .keywords
         font-size 12px
         word-wrap break-word

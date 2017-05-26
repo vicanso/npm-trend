@@ -32,7 +32,7 @@
     "docs": "node ./node_modules/.bin/jsdoc -c .jsdoc.json --readme ./README.md",
     "watch": "node node_modules/.bin/webpack --progress --colors --watch",
     "start": "node app",
-    "dev": "INFLUX=http://127.0.0.1:8086/npmtrend nodemon app"
+    "dev": "GITHUB_AUTH=7a10304dc50a29901a8e:9100f42568de8bdcc0d6b45ce3b9aac9bb3caade INFLUX=http://127.0.0.1:8086/npmtrend nodemon app"
   },
   "license": "MIT",
   "dependencies": {

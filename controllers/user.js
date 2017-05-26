@@ -103,13 +103,15 @@ exports.loginCallback = async (ctx) => {
     code: Joi.string().max(24),
     type: Joi.string().valid(['github']),
     'redirect-uri': Joi.string().default('/'),
+    disableTimeout: Joi.string().empty(''),
   });
+  const authInfos = config.githubAuth.split(':');
   let res = await request.post('https://github.com/login/oauth/access_token')
     .timeout(30 * 1000)
     .set('Accept', 'application/json')
     .send({
-      client_id: '04e3e64ca25edf31751e',
-      client_secret: 'c37548b36fc69739f3dd5a9dffea89ee7cbfc895',
+      client_id: authInfos[0],
+      client_secret: authInfos[1],
       code: params.code,
     });
   const accessToken = res.body.access_token;
@@ -143,7 +145,11 @@ exports.loginCallback = async (ctx) => {
     };
     influx.write('login', fields, data);
   }).catch(err => console.error(`Get location by ip(${ip}) fail, ${err.message}`));
-  ctx.redirect(urlJoin(config.appUrlPrefix, params['redirect-uri']));
+  if (config.appUrlPrefix) {
+    ctx.redirect(urlJoin(config.appUrlPrefix, params['redirect-uri']));
+  } else {
+    ctx.redirect(params['redirect-uri']);
+  }
 };
 
 exports.star = async (ctx) => {
@@ -168,4 +174,9 @@ exports.getStars = async (ctx) => {
   const user = ctx.session.user;
   ctx.body = await userService
     .getStars(user.account, user.type);
+};
+
+exports.login = (ctx) => {
+  const authInfos = config.githubAuth.split(':');
+  ctx.redirect(`https://github.com/login/oauth/authorize?client_id=${authInfos[0]}`);
 };

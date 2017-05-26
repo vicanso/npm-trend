@@ -120,13 +120,17 @@ function initUserHandle(wrapper) {
   const myStarsSelector = '.header-wrapper .user-functions .my-stars';
 
   $(userSelector, wrapper).click(() => {
-    $(functionsSelector, wrapper).removeClass('hidden');
+    $(functionsSelector, wrapper).toggleClass('hidden');
   }).blur(() => {
     const obj = $(functionsSelector, wrapper);
     obj.css('opacity', 0);
     _.delay(() => {
       obj.addClass('hidden').css('opacity', 1);
     }, 500);
+  });
+
+  $(functionsSelector, wrapper).click(() => {
+    $(functionsSelector, wrapper).addClass('hidden');
   });
 
   $(logoutSelector, wrapper).click(() => {
@@ -146,12 +150,16 @@ function initUserHandle(wrapper) {
     if (target.hasClass('selected')) {
       fn = 'removeStar';
     }
+    const faItem = target.find('.fa');
+    faItem.addClass('fa-spinner');
     staring[name] = true;
     userService[fn](name)
       .then(() => {
+        faItem.removeClass('fa-spinner');
         delete staring[name];
       })
       .catch((err) => {
+        faItem.removeClass('fa-spinner');
         delete staring[name];
         alert(getErrorMessage(err));
       });

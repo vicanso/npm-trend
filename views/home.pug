@@ -55,12 +55,12 @@ mixin Modules(items)
           span (#{item.latest.version})
           span.tips(data-content=item.about)
             +FontIcon('fa-question-circle-o')
-          a(href='javascript:;', title='show download trend').download-trend.mleft10
+          a(href='javascript:;', title='show download trend').download-trend
             +FontIcon('fa-area-chart')
-          a(href='javascript:;', title='add to compare').compare.mleft10
-            +FontIcon('fa-link font14')
-          a(href='javascript:;', title='star the module').star.mleft10
-            +FontIcon('fa-star font14')
+          a(href='javascript:;', title='add to compare').compare
+            +FontIcon('fa-link')
+          a(href='javascript:;', title='star the module').star
+            +FontIcon('fa-star')
         p #{item.description}
         if item.keywords && item.keywords.length
           +Keywords(item.keywords)
@@ -93,7 +93,7 @@ mixin HeaderView()
           +FontIcon('fa-filter')
         a(href='https://github.com/vicanso/npm-trend', title='Fork me')
           +FontIcon('fa-github')
-        a.login.hidden(href='https://github.com/login/oauth/authorize?client_id=04e3e64ca25edf31751e', title='Login')
+        a.login.hidden(href=URL('/api/users/login'), title='Login')
           +FontIcon('fa-sign-in')
         a.user.hidden(href='javascript:;', title='Logout')
     .user-functions.tooltip.hidden

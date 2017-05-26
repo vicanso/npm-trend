@@ -50,6 +50,11 @@ export default class Trends {
         ${daysList.join('')}
       </div>
     `);
+    target.append(`
+      <div class="copyright">
+        npmtrend.com
+      </div>
+    `);
     const categories = [];
     const chartData = _.map(data, (arr, index) => {
       const series = {

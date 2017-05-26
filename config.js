@@ -65,3 +65,5 @@ exports.udpLog = process.env.UDP_LOG;
 exports.apiUrl = process.env.API_URL;
 
 exports.httpLogEnabled = process.env.HTTP_LOG !== '0';
+
+exports.githubAuth = process.env.GITHUB_AUTH;

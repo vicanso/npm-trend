@@ -3,6 +3,7 @@ module.exports = [
   '[PUT] [/api/users/me] [m.session & c.user.refreshSession]',
   '[POST] [/api/users/behavior] [m.session & c.user.behavior]',
   '[DELETE] [/api/users/logout] [m.session.login & c.user.logout]',
+  '[GET] [/api/users/login] [c.user.login]',
   '[GET] [/api/users/login/callback] [m.session & c.user.loginCallback]',
   '[POST,PUT,DELETE] [/api/user/stars/:module] [m.session.login & tracker("starModule", [":method", "module"]) & c.user.star]',
   '[GET] [/api/user/stars] [m.session.login & c.user.getStars]',
