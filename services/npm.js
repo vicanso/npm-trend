@@ -406,7 +406,7 @@ exports.udpateCreatedAndUpdatedCount = async () => {
   const latestStats = await Stats.findOne({}).sort({
     date: -1,
   }).select('date');
-  const startDate = latestStats.date;
+  const startDate = latestStats && latestStats.date;
   const cursor = NPM.find({}, 'versions createdTime')
     .cursor();
   const result = {};
