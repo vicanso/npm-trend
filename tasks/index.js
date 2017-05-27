@@ -58,13 +58,22 @@ async function updateDependeds() {
   }
 }
 
-if (process.env.ENABLE_JOB) {
-  schedule.scheduleJob('00 14 * * *', updateAllModules);
-  schedule.scheduleJob('00 10 * * *', updateYesterdayMoudles);
-  schedule.scheduleJob('00 11 * * *', updateDependeds);
+async function udpateCreatedAndUpdatedCount() {
+  try {
+    console.info('start to update created and updated count');
+    await npmService.udpateCreatedAndUpdatedCount();
+    console.info('start to update created and updated count');
+  } catch (err) {
+    console.error(`update created and update count fail, ${err.message}`);
+  }
 }
-if (process.env.UPDATE_DOWNLOADS) {
-  schedule.scheduleJob('00 01 * * *', updateModulesDownloads);
+
+if (process.env.ENABLE_JOB) {
+  schedule.scheduleJob('00 01 * * *', udpateCreatedAndUpdatedCount);
+  schedule.scheduleJob('00 02 * * *', updateYesterdayMoudles);
+  schedule.scheduleJob('00 03 * * *', updateDependeds);
+  schedule.scheduleJob('00 04 * * *', updateAllModules);
+  schedule.scheduleJob('00 15 * * *', updateModulesDownloads);
 }
 if (process.env.DO_NOW) {
   const doTask = process.env.DO_NOW;

@@ -398,9 +398,9 @@ exports.getDownloads = async (name, begin, end) => {
 };
 
 /**
- * Get the created and update count
+ * update the created and update count
  */
-exports.getCreatedAndUpdatedCount = async () => {
+exports.udpateCreatedAndUpdatedCount = async () => {
   const Stats = Models.get('Statistics');
   const NPM = Models.get('Npm');
   const latestStats = await Stats.findOne({}).sort({
