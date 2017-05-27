@@ -261,7 +261,7 @@ exports.updateModulesDownloads = async () => {
     }
   };
   console.info('start to get all module\'s name');
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     cursor.on('data', (doc) => {
       modules.push(doc.name);
     }).on('end', async () => {
@@ -270,7 +270,7 @@ exports.updateModulesDownloads = async () => {
         concurrency: 5,
       });
       resolve();
-    });
+    }).on('error', reject);
   });
 };
 
@@ -395,4 +395,64 @@ exports.getDownloads = async (name, begin, end) => {
     beginDate.add(1, 'day');
   }
   return result;
+};
+
+/**
+ * Get the created and update count
+ */
+exports.getCreatedAndUpdatedCount = async () => {
+  const Stats = Models.get('Statistics');
+  const NPM = Models.get('Npm');
+  const latestStats = await Stats.findOne({}).sort({
+    date: -1,
+  }).select('date');
+  const startDate = latestStats.date;
+  const cursor = NPM.find({}, 'versions createdTime')
+    .cursor();
+  const result = {};
+  const add = (date, type) => {
+    if (!result[date]) {
+      result[date] = {
+        updated: 0,
+        created: 0,
+      };
+    }
+    result[date][type] += 1;
+  };
+  return new Promise((resolve, reject) => {
+    cursor.on('data', (doc) => {
+      _.forEach(doc.versions, (item) => {
+        const updated = item.time.substring(0, 10);
+        if (!startDate || updated >= startDate) {
+          add(updated, 'updated');
+        }
+      });
+      const created = doc.createdTime.substring(0, 10);
+      if (!startDate || created >= startDate) {
+        add(created, 'created');
+      }
+    }).on('end', () => {
+      const arr = [];
+      _.forEach(result, (value, date) => {
+        const data = _.extend({
+          date,
+        }, value);
+        arr.push(data);
+      });
+      Promise.map(arr, async (item) => {
+        try {
+          await Stats.findOneAndUpdate({
+            date: item.date,
+          }, item, {
+            upsert: true,
+          });
+        } catch (err) {
+          console.error(`add ${item.date} stats fail, ${err.message}`);
+        }
+      }, {
+        concurrency: 5,
+      }).then(resolve)
+      .catch(reject);
+    }).on('eroor', reject);
+  });
 };
