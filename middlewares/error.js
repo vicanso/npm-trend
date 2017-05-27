@@ -44,7 +44,7 @@ module.exports = () => (ctx, next) => next().catch((err) => {
   }
   // expected 主动抛出的异常如果需要记录到influxdb，则删除此判断
   if (!data.expected) {
-    influx.write('excetion', {
+    influx.write('exception', {
       code,
       path: urlInfo.pathname,
       message,

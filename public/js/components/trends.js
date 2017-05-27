@@ -1,21 +1,18 @@
 import _ from 'lodash';
-import Promise from 'bluebird';
 import $ from 'jquery';
 import {
   Line,
 } from 'dcharts';
 
-import * as npmService from '../services/npm';
 
 const DAY_LIST = [7, 14, 28, 91, 182, 364];
 
 export default class Trends {
-  constructor(target, modules) {
+  constructor(target, options) {
     this.target = $('<div class="trends-chart" />').appendTo(target);
-    this.modules = modules;
-    this.options = {
+    this.options = _.extend({
       days: DAY_LIST[2],
-    };
+    }, options);
     this.initEvent();
   }
   initEvent() {
@@ -32,8 +29,10 @@ export default class Trends {
   showChart(data) {
     const {
       target,
-      modules,
     } = this;
+    const {
+      title,
+    } = this.options;
     const currentDays = this.options.days;
     target.html('<svg />');
     const daysList = _.map(DAY_LIST, (days) => {
@@ -55,32 +54,19 @@ export default class Trends {
         npmtrend.com
       </div>
     `);
-    const categories = [];
-    const chartData = _.map(data, (arr, index) => {
-      const series = {
-        name: modules[index],
-      };
-      series.data = _.map(arr, (item) => {
-        if (index === 0) {
-          categories.push(item.date);
-        }
-        return item.count;
-      });
-      return series;
-    });
     const chart = new Line(target.find('svg').get(0));
     chart.set('yAxis.width', 40);
-    chart.set('xAxis.categories', categories);
-    chart.set('title.text', 'The trend of downloads');
-    chart.render(chartData);
+    chart.set('xAxis.categories', data.categories);
+    chart.set('title.text', title || 'Trends');
+    chart.render(data.data);
   }
   render() {
     const {
       target,
-      modules,
     } = this;
     const {
       days,
+      getData,
     } = this.options;
     const loadingHtml = `
       <div class="loading">
@@ -92,9 +78,7 @@ export default class Trends {
     if (days > 100) {
       interval = 7;
     }
-    const fns = _.map(modules, module => npmService.getDownloads(module, days, interval));
-    Promise.all(fns)
-      .then(data => this.showChart(data))
+    getData(days, interval).then(data => this.showChart(data))
       .catch(() => target.find('.loading').text('Loading fail'));
   }
 }

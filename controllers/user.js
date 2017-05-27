@@ -118,8 +118,8 @@ exports.loginCallback = async (ctx) => {
   if (!accessToken) {
     throw errors.get(108);
   }
-
-  res = await request.get(`https://api.github.com/user?access_token=${accessToken}`);
+  res = await request.get(`https://api.github.com/user?access_token=${accessToken}`)
+  .timeout(30 * 1000);
   const userInfos = res.body;
   const user = {
     token: randomToken(),

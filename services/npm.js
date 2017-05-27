@@ -456,3 +456,23 @@ exports.udpateCreatedAndUpdatedCount = async () => {
     }).on('eroor', reject);
   });
 };
+
+exports.getStatistics = async (date) => {
+  const startDate = moment(date).format('YYYY-MM-DD');
+  const Stats = Models.get('Statistics');
+  const docs = await Stats.find({});
+  const stats = _.sortBy(_.map(docs, item => item.toJSON()), item => item.date);
+  let moduleCount = 0;
+  const result = {};
+  _.forEach(stats, (item) => {
+    moduleCount += (item.created || 0);
+    if (item.date >= startDate) {
+      result[item.date] = {
+        created: item.created || 0,
+        updated: item.updated || 0,
+        modules: moduleCount,
+      };
+    }
+  });
+  return result;
+};

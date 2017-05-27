@@ -138,6 +138,21 @@ function initUserHandle(wrapper) {
   });
   $(myStarsSelector, wrapper).click(showMyStars);
 
+  $('.header-wrapper .user-functions .npm-trends', wrapper).click(() => {
+    const chartWrapper = $('<div class="npm-trends-wrapper" />')
+      .appendTo(wrapper);
+    const mask = $('<div class="mask-wrapper" />')
+      .appendTo('body')
+      .click(() => {
+        chartWrapper.remove();
+        mask.remove();
+      });
+    const trends = new Trends(chartWrapper, {
+      title: 'NPM Statistics',
+      getData: (days, interval) => npmService.getNPMStatsChartData(days, interval),
+    });
+    trends.render();
+  });
 
   const staring = {};
   wrapper.on('click', '.modules-wrapper a.star', (e) => {
@@ -431,9 +446,20 @@ function initDownloadTrendHandle() {
     const name = target.siblings('.module').text();
     const chartWrapper = $('<div class="chart-wrapper" />')
       .appendTo(moduleItem);
-    const trends = new Trends(chartWrapper, [
+    const modules = [
       name,
-    ]);
+    ];
+    const trends = new Trends(chartWrapper, {
+      title: 'The trend of downloads',
+      getData: (days, interval) => {
+        const args = [
+          modules,
+          days,
+          interval,
+        ];
+        return npmService.getDownloadsChartData(...args);
+      },
+    });
     trends.render();
   });
 }
@@ -512,7 +538,18 @@ function initCompareHandle() {
     compareWrapper.find('.compare-chart-wrapper').remove();
     const chartWrapper = $('<div class="compare-chart-wrapper" />')
       .appendTo(compareWrapper);
-    const trends = new Trends(chartWrapper, npmService.getCompareList());
+    const modules = npmService.getCompareList();
+    const trends = new Trends(chartWrapper, {
+      title: 'The trend of downloads',
+      getData: (days, interval) => {
+        const args = [
+          modules,
+          days,
+          interval,
+        ];
+        return npmService.getDownloadsChartData(...args);
+      },
+    });
     trends.render();
   });
   viewWrapper.on('click', '.compare-wrapper .close', () => {

@@ -46,7 +46,7 @@ const schemas = {
       stripUnknown: true,
     },
   },
-  excetion: {
+  exception: {
     fields: {
       code: 'integer',
       path: 'string',
@@ -72,7 +72,7 @@ const schemas = {
     },
     // 根据koa-http-stats配置的指定
     tags: {
-      status: '12345'.split(''),
+      status: '012345'.split(''),
       spdy: '012345'.split(''),
       size: '012345'.split(''),
       busy: '01234'.split(''),

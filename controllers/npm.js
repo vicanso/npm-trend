@@ -14,7 +14,7 @@ exports.get = async (ctx) => {
     .select('name')
     .skip(options.offset)
     .limit(options.limit);
-  ctx.set(600);
+  ctx.set('10m');
   ctx.body = _.map(docs, item => item.name);
 };
 
@@ -94,10 +94,72 @@ exports.getDownloads = async (ctx) => {
   } else {
     ctx.body = data;
   }
-  ctx.setCache('10m');
+  ctx.setCache('60m', '10m');
 };
 
 exports.updatePeriodCounts = async (ctx) => {
   await npmService.updatePeriodCounts(ctx.params.name);
   ctx.body = null;
+};
+
+exports.getStatistics = async (ctx) => {
+  const formatStr = 'YYYY-MM-DD';
+  const params = Joi.validateThrow(ctx.query, {
+    begin: Joi.date().min(moment().add(-1, 'year').format(formatStr)),
+    end: Joi.date().max(moment().format(formatStr))
+      .default(moment().add(-1, 'day').format(formatStr)),
+    interval: Joi.number().integer().min(1).default(1),
+  });
+  const {
+    begin,
+    end,
+    interval,
+  } = params;
+  const stats = await npmService.getStatistics(begin);
+  const offset = moment(end).valueOf() - moment(begin).valueOf();
+  const days = parseInt(offset / (24 * 3600 * 1000), 10);
+  const data = [];
+  let currentModulesCount = 0;
+  for (let i = 0; i < days; i += 1) {
+    const date = moment(begin).add(i, 'day').format(formatStr);
+    const item = stats[date];
+    if (item) {
+      currentModulesCount = item.modules;
+      data.push(_.extend({
+        date,
+      }, item));
+    } else {
+      data.push({
+        date,
+        created: 0,
+        updated: 0,
+        modules: currentModulesCount,
+      });
+    }
+  }
+  if (interval > 1) {
+    const result = [];
+    const max = data.length;
+    let tmpResult = {
+      created: 0,
+      updated: 0,
+    };
+    _.forEach(data, (item, index) => {
+      tmpResult.created += item.created;
+      tmpResult.updated += item.updated;
+      tmpResult.modules = item.modules;
+      if (index === max - 1 || (index + 1) % interval === 0) {
+        tmpResult.date = item.date;
+        result.push(tmpResult);
+        tmpResult = {
+          created: 0,
+          updated: 0,
+        };
+      }
+    });
+    ctx.body = result;
+  } else {
+    ctx.body = data;
+  }
+  ctx.setCache('60m', '10m');
 };

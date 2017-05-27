@@ -13,6 +13,7 @@ export const USER_STAR = '/api/user/stars';
 
 export const NPM_COUNT = '/api/modules/count';
 export const NPM_DOWNLOADS = '/api/modules/:name/downloads';
+export const NPM_STATS = '/api/modules/statistics';
 
 export const VIEW_HOME = `${appUrlPrfix}/`;
 export const VIEW_LOGIN = `${appUrlPrfix}/login`;

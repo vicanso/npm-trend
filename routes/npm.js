@@ -5,4 +5,5 @@ module.exports = [
   '[GET] [/api/modules/:name/downloads] [c.npm.getDownloads]',
   '[GET] [/api/modules/count] [c.npm.count]',
   '[PATCH] [/api/modules/:name/period-counts] [m.auth.admin & c.npm.updatePeriodCounts]',
+  '[GET] [/api/modules/statistics] [c.npm.getStatistics]',
 ];
