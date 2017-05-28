@@ -138,9 +138,14 @@ function initUserHandle(wrapper) {
   });
   $(myStarsSelector, wrapper).click(showMyStars);
 
+  $(loginSelector, wrapper).click((e) => {
+    $(e.currentTarget).find('.fa').addClass('fa-spinner');
+  });
+
   $('.header-wrapper .user-functions .npm-trends', wrapper).click(() => {
-    const chartWrapper = $('<div class="npm-trends-wrapper" />')
-      .appendTo(wrapper);
+    const chartWrapper = $(`<div class="npm-trends-wrapper">
+      <h5 class="font14">NPM created and updated trends</h5>
+    </div>`).appendTo(wrapper);
     const mask = $('<div class="mask-wrapper" />')
       .appendTo('body')
       .click(() => {
@@ -148,7 +153,6 @@ function initUserHandle(wrapper) {
         mask.remove();
       });
     const trends = new Trends(chartWrapper, {
-      title: 'NPM Statistics',
       getData: (days, interval) => npmService.getNPMStatsChartData(days, interval),
     });
     trends.render();
@@ -189,7 +193,7 @@ function initUserHandle(wrapper) {
     } else {
       loginBtn.addClass('hidden');
       userAvatar.removeClass('hidden')
-      .html(`<img src="${userInfo.avatar}" />`);
+      .html(`<img src="${userInfo.avatar}" alt="avatar" />`);
     }
   };
 

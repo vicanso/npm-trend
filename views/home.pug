@@ -83,7 +83,7 @@ mixin HeaderView()
       .logo
         a(href=URL('/')) npm trend 
       .search-box: .search-component
-        button.search
+        button.search(value='search')
           +FontIcon('fa-search')
         a.clear(href='javascript:;')
           +FontIcon('fa-times')

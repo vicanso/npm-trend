@@ -57,7 +57,7 @@ export default class Trends {
     const chart = new Line(target.find('svg').get(0));
     chart.set('yAxis.width', 40);
     chart.set('xAxis.categories', data.categories);
-    chart.set('title.text', title || 'Trends');
+    chart.set('title.text', title || '');
     chart.render(data.data);
   }
   render() {
