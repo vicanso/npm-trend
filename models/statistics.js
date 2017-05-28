@@ -18,9 +18,6 @@ module.exports = {
     updated: {
       type: Number,
     },
-    modules: {
-      type: Number,
-    },
   },
   indexes: [
     {
