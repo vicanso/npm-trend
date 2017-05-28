@@ -403,10 +403,6 @@ exports.getDownloads = async (name, begin, end) => {
 exports.udpateCreatedAndUpdatedCount = async () => {
   const Stats = Models.get('Statistics');
   const NPM = Models.get('Npm');
-  const latestStats = await Stats.findOne({}).sort({
-    date: -1,
-  }).select('date');
-  const startDate = latestStats && latestStats.date;
   const cursor = NPM.find({}, 'versions createdTime')
     .cursor();
   const result = {};
@@ -423,12 +419,12 @@ exports.udpateCreatedAndUpdatedCount = async () => {
     cursor.on('data', (doc) => {
       _.forEach(doc.versions, (item) => {
         const updated = item.time.substring(0, 10);
-        if (!startDate || updated >= startDate) {
+        if (updated) {
           add(updated, 'updated');
         }
       });
       const created = doc.createdTime.substring(0, 10);
-      if (!startDate || created >= startDate) {
+      if (created) {
         add(created, 'created');
       }
     }).on('end', () => {
