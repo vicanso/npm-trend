@@ -21,7 +21,10 @@ module.exports = () => (ctx, next) => next().catch((err) => {
   ctx.set('Cache-Control', 'no-cache, max-age=0');
   const error = _.isError(err) ? err : new Error(err);
   const message = error.message;
-  const code = error.code || -1;
+  let code = parseInt(error.code, 10);
+  if (_.isNaN(code)) {
+    code = -1;
+  }
   const data = {
     url: ctx.url,
     code,
@@ -57,8 +60,13 @@ module.exports = () => (ctx, next) => next().catch((err) => {
 
   console.error(logList.join(' '));
 
+  const status = parseInt(error.status || err.statusCode, 10);
   /* eslint no-param-reassign:0 */
-  ctx.status = error.status || err.statusCode || 500;
+  if (_.isNaN(status)) {
+    ctx.status = 500;
+  } else {
+    ctx.status = status;
+  }
   /* eslint no-param-reassign:0 */
   ctx.body = data;
 });
