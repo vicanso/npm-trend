@@ -48,7 +48,7 @@ exports.getParam = (arr, validate, defaultValue) => {
  * // 每隔2秒检测一次是否还有连接请求，如果无，则退出
  * utils.checkToExit(5, 2000);
  */
-exports.checkToExit = (times, checkInterval = 10 * 1000) => {
+exports.checkToExit = (times, checkInterval = 3 * 1000) => {
   let count = times;
   globals.set('status', 'pause');
   const timer = setInterval(() => {
