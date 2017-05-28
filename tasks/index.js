@@ -62,7 +62,7 @@ async function udpateCreatedAndUpdatedCount() {
   try {
     console.info('start to update created and updated count');
     await npmService.udpateCreatedAndUpdatedCount();
-    console.info('start to update created and updated count');
+    console.info('update created and updated count success');
   } catch (err) {
     console.error(`update created and update count fail, ${err.message}`);
   }
@@ -83,6 +83,9 @@ if (process.env.DO_NOW) {
       break;
     case 'updateModulesDownloads':
       updateModulesDownloads();
+      break;
+    case 'udpateCreatedAndUpdatedCount':
+      udpateCreatedAndUpdatedCount();
       break;
     default:
       break;
