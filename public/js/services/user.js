@@ -101,7 +101,7 @@ export function me() {
 }
 
 export function logout() {
-  return http.del(USER_LOGOUT)
+  return http.delete(USER_LOGOUT)
     .noCache()
     .then(() => userStore.dispatch({
       type: BASIC_INFO,
@@ -120,7 +120,7 @@ export function addStar(module) {
 }
 
 export function removeStar(module) {
-  return http.del(`${USER_STAR}/${module}`)
+  return http.delete(`${USER_STAR}/${module}`)
     .then(() => userStore.dispatch({
       type: UNSTAR_MODULE,
       data: {
