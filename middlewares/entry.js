@@ -60,7 +60,9 @@ module.exports = (processName, appUrlPrefix) => (ctx, next) => {
   ctx.set('Via', _.compact(processList).join(','));
   ctx.set('Cache-Control', 'no-cache, max-age=0');
   globals.set('connectingTotal', globals.get('connectingTotal') + 1);
-  const timing = new Timing();
+  const timing = new Timing({
+    precision: 'ns',
+  });
   ctx.state.timing = timing;
   timing.start(processName);
   const complete = () => {

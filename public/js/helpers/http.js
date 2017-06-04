@@ -1,5 +1,6 @@
 import * as request from 'superagent';
 import * as _ from 'lodash';
+import HTTPTiming from 'http-timing';
 
 import * as globals from './globals';
 import * as utils from './utils';
@@ -8,6 +9,10 @@ import {
   STATS_EXCEPTION,
 } from '../constants/urls';
 import debug from './debug';
+
+const timing = new HTTPTiming({
+  max: 3000,
+});
 
 const APP_NAME = globals.get('CONFIG.app');
 request.Request.prototype.version = function version(v) {
@@ -95,6 +100,10 @@ export function patch(url, data, query) {
   return req;
 }
 
+export function getTimingView() {
+  return timing.toHTML();
+}
+
 function createDebouncePost(url, interval = 3000) {
   const dataList = [];
   const debouncePost = _.debounce(() => {
@@ -158,6 +167,13 @@ function stats() {
       });
     }
     const start = Date.now();
+    let set = null;
+    if (!isReject(url)) {
+      set = timing.add({
+        url,
+        method,
+      });
+    }
     req.once('error', () => {
       doingRequest[key] -= 1;
     });
@@ -166,17 +182,26 @@ function stats() {
       if (isReject(url)) {
         return;
       }
-      const processing = getProcessingTime(res.get('Server-Timing'));
+      const serverTiming = res.get('Server-Timing');
+      const processing = getProcessingTime(serverTiming);
       const cost = Date.now() - start;
+      const status = res.status;
       const data = {
         method,
         url,
         use: cost,
         processing,
         network: cost - processing,
-        status: res.status,
+        status,
         hit: parseInt(res.get('X-Hits') || 0, 10),
       };
+      if (set) {
+        set({
+          use: cost,
+          status,
+          serverTiming,
+        });
+      }
       statsAjax(data);
     });
   };

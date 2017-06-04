@@ -89,6 +89,29 @@ function initScroll() {
   });
 }
 
+function initTimingView() {
+  const doc = $(globals.get('document'));
+  let count = 0;
+  doc.click((e) => {
+    if (e.pageX < 15 && e.pageY < 15) {
+      count += 1;
+    } else {
+      count = 0;
+    }
+    if (count >= 3) {
+      const html = http.getTimingView();
+      const timing = $(`<div class="timing-wrapper">
+        <a href="javascript:;">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </a>
+        ${html}
+      </div>`);
+      timing.find('a').click(() => timing.remove());
+      timing.appendTo('body');
+    }
+  });
+}
+
 locationService.subscribe(() => userService.addBehavior('pv'));
 
 _.defer(() => {
@@ -97,6 +120,7 @@ _.defer(() => {
   // set global http request timeout
   http.timeout(10 * 1000);
   initScroll();
+  initTimingView();
   userService.visit();
   userService.me();
 });
