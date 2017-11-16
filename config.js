@@ -60,7 +60,8 @@ exports.mongoUri = process.env.MONGO || 'mongodb://127.0.0.1/npmtrend';
 // [redis:]//[[user][:password@]][host][:port][/db-number][?db=db-number[&password=bar[&option=value]]]
 exports.redisUri = process.env.REDIS || 'redis://127.0.0.1/';
 
-exports.udpLog = process.env.UDP_LOG;
+// logger setting "console", "udp://127.0.0.1:5001"
+exports.logger = process.env.LOG;
 
 exports.apiUrl = process.env.API_URL;
 

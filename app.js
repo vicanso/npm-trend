@@ -3,7 +3,6 @@ require('dnscache')({
   ttl: 600,
   cachesize: 100,
 });
-const logger = require('timtam-logger');
 const stringify = require('simple-stringify');
 
 require('./helpers/local-require');
@@ -12,21 +11,8 @@ require('./helpers/local-require');
 const config = localRequire('config');
 const utils = localRequire('helpers/utils');
 
-function initLogger() {
-  logger.set({
-    app: config.app,
-    prefix: config.name,
-  });
-  logger.wrap(console);
-  if (config.udpLog) {
-    logger.add(config.udpLog);
-  } else {
-    logger.add('console');
-  }
-}
 
-initLogger();
-
+localRequire('helpers/logger');
 localRequire('helpers/bluebird');
 localRequire('helpers/joi');
 localRequire('models');
